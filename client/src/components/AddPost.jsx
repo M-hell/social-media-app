@@ -151,7 +151,7 @@ function AddPost() {
                 {/* Submit Button */}
                 <button 
                     type="submit" 
-                    className={`bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition duration-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     disabled={loading}
                 >
                     {loading ? 'Submitting...' : 'Submit'}

@@ -2,11 +2,12 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { logout, setUser } from '../redux/userSlice';
+import { logout, setUser, setOnlineUser, setSocketConnection } from '../redux/userSlice';
 import Header from '../components/Header';
 import UserSidebar from '../components/UserSidebar';
 import { Outlet } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import io from 'socket.io-client';
 
 const Home = () => {
   const user = useSelector(state => state.user);
@@ -22,7 +23,7 @@ const Home = () => {
         url: URL,
         withCredentials: true
       });
-      
+
       setData(response.data.data);
       if (response.data.data.logout) {
         dispatch(logout());
@@ -59,6 +60,26 @@ const Home = () => {
     }
   }, [data]);
 
+  /*** Socket connection ***/
+  useEffect(() => {
+    const socketConnection = io(import.meta.env.VITE_REACT_APP_BACKEND_URL, {
+      auth: {
+        token: localStorage.getItem('token')
+      },
+    });
+
+    socketConnection.on('onlineUser', (data) => {
+      console.log(data);
+      dispatch(setOnlineUser(data));
+    });
+
+    dispatch(setSocketConnection(socketConnection));
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
+
   const isPostsActive = location.pathname === '/all-posts';
   const isThreadsActive = location.pathname === '/all-threads';
 
@@ -81,16 +102,16 @@ const Home = () => {
           {/* Tab buttons */}
           <div className="join mb-4 w-full lg:w-auto flex justify-center">
             <button
-              className={`btn join-item transition-all duration-1000 ease-in-out hover:bg-blue-600 rounded-lg mx-2 p-2 ${
-                isPostsActive ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-300'
+              className={`btn join-item transition-all duration-1000 ease-in-out hover:bg-orange-600 rounded-lg mx-2 p-2 ${
+                isPostsActive ? 'bg-orange-500 text-white' : 'bg-gray-600 text-gray-300'
               }`}
               onClick={() => navigate("/all-posts")}
             >
               Posts
             </button>
             <button
-              className={`btn join-item transition-all duration-1000 ease-in-out hover:bg-blue-600 rounded-lg mx-2 p-2 ${
-                isThreadsActive ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-300'
+              className={`btn join-item transition-all duration-1000 ease-in-out hover:bg-orange-600 rounded-lg mx-2 p-2 ${
+                isThreadsActive ? 'bg-orange-500 text-white' : 'bg-gray-600 text-gray-300'
               }`}
               onClick={() => navigate("/all-threads")}
             >

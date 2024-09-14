@@ -11,6 +11,7 @@ import Ranking from "../components/Ranking";
 import AddPost from "../components/AddPost";
 import AddThread from "../components/AddThread";
 import AllThreads from "../components/AllThreads";
+import MessagePage from "../components/MessagePage";
 
 
 const router = createBrowserRouter([
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
           {
             path: "all-threads",
             element: <AllThreads />,
+          },
+          {
+            path: "message/:userId",
+            element: <MessagePage />
           }
         ]
       }

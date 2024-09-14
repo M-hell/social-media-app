@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import Loading from './Loading';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom'; // Use Link for routing
 import { useNavigate } from 'react-router-dom';
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 
 function UserSidebar() {
     const [loading, setLoading] = useState(false);
@@ -65,18 +65,19 @@ function UserSidebar() {
                     ) : (
                         <ul className="space-y-2">
                             {users.map((user) => (
-                                <Link key={user._id} to={`/${user._id}`} className="bg-gray-600 hover:border hover:border-orange-500 hover:bg-slate-950 text-white rounded-lg shadow-sm p-2 flex items-center space-x-3">
+                                <div key={user._id} className="bg-gray-600 hover:border hover:border-orange-500 hover:bg-slate-950 text-white rounded-lg shadow-sm p-2 flex items-center space-x-3">
                                     <img
                                         src={user.profile_pic || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'}
                                         alt={user.name || 'Default User'}
                                         className="w-12 h-12 object-cover rounded-full border border-gray-300"
                                     />
-                                    <div className="flex-1">
-                                        <span className="block text-sm font-medium">
+                                    <div onClick={() => navigate(`/${user._id}`)} className="flex-1 cursor-pointer">
+                                        <span className="block text-sm font-medium cursor-pointer hover:text-orange-500">
                                             {user.name}
                                         </span>
                                     </div>
-                                </Link>
+                                    <div onClick={() => navigate(`/message/${user._id}`)} className="cursor-pointer hover:text-orange-600" title='Chat'><IoChatbubbleEllipsesSharp /></div>
+                                </div>
                             ))}
                         </ul>
                     )}

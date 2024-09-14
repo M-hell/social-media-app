@@ -3,11 +3,15 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { MdArrowBackIos } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import EditUserDetails from './EditUserDetails';
 
 function OtherProfileCard({ user }) {
     const [isFollowing, setIsFollowing] = useState(false);
     const owner = useSelector((state) => state.user);
     const navigate = useNavigate();
+    const [editUser,setEditUser] = useState(false)
 
     const handleFollow = async () => {
         try {
@@ -42,8 +46,11 @@ function OtherProfileCard({ user }) {
 
     return (
         <div className="card card-side bg-gray-800 text-white shadow-xl rounded-lg overflow-hidden flex flex-col items-center p-4">
-            <button onClick={() => navigate('/')} className="btn btn-secondary mb-4 self-start">Back to Home</button>
-            <figure className="w-32 h-32 flex items-center justify-center mb-4">
+            <button onClick={() => navigate('/')} className="btn text-white bg-orange-600 mb-4 self-start flex justify-center items-center"><MdArrowBackIos /> Back to Home</button>
+            {owner._id === user._id && (
+                <button className="btn mb-4 self-start flex justify-center items-center " onClick={() => setEditUser(true)}>Edit Profile <MdEdit className='text-xl' /></button>
+            )}
+            <figure className="w-32 h-32 flex items-center justify-center flex-col mb-4">
                 <img
                     src={user.profile_pic || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'} // Fallback to default image if profile_pic is not available
                     alt={user.name || 'Default User'}
@@ -70,16 +77,23 @@ function OtherProfileCard({ user }) {
                         <span className="text-lg font-semibold">{user?.downvotes}</span>
                         <span className="text-sm text-gray-400">Downvotes</span>
                     </div>
+
                 </div>
                 {!isCurrentUser && (
                     <div className="card-actions mt-4 flex justify-center">
                         {isFollowing ? (
-                            <button className="btn text-white btn-secondary">Following</button>
+                            <button className="btn text-white bg-orange-600">Following</button>
                         ) : (
-                            <button onClick={handleFollow} className="btn btn-primary">Follow</button>
+                            <button onClick={handleFollow} className="btn text-white bg-orange-600">Follow</button>
                         )}
                     </div>
                 )}
+
+            {
+                editUser && (
+                    <EditUserDetails onClose={()=>setEditUser(false)} user={user}/>
+                )
+            }
             </div>
         </div>
     );

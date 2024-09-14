@@ -1,8 +1,7 @@
 require('dotenv').config()
 
-
+const { app, server } = require('./socket/index.js')
 const express=require('express')
-const app=express()
 const PORT=process.env.PORT || 3000
 
 
@@ -34,7 +33,7 @@ app.use('/api',router)
 //db connection
 const connectDB=require('./db/connectDb')
 connectDB().then(()=>{
-    app.listen(PORT,()=>{
+    server.listen(PORT,()=>{
         console.log(`app running on http://localhost:${PORT}/`);
     })
 })

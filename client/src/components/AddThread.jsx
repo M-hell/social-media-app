@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import uploadFile from '../helpers/uploadFile';
 import { useNavigate } from 'react-router-dom';
-import { IoClose } from "react-icons/io5";
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
 
 function AddThread() {
     const [data, setData] = useState({
-        postimg: "",
         description: "",
     });
     const navigate = useNavigate();
-
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
@@ -21,10 +16,6 @@ function AddThread() {
             [name]: value
         }));
     };
-
-    
-
-   
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +26,7 @@ function AddThread() {
             });
             if (response.status === 200) {
                 toast.success('Post uploaded successfully!');
-                navigate('/all-threads'); // Navigate to home after successful upload
+                navigate('/all-threads'); // Navigate to threads page after successful upload
             }
         } catch (error) {
             console.error('Error uploading post:', error);
@@ -58,7 +49,6 @@ function AddThread() {
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 bg-gray-800 p-6 rounded-lg shadow-lg transition-transform duration-500 hover:scale-105">
                 
-
                 {/* Description */}
                 <div className="flex flex-col gap-2">
                     <label htmlFor="description" className="text-gray-400 text-sm">Enter your question:</label>
@@ -67,17 +57,22 @@ function AddThread() {
                         name="description"
                         value={data.description}
                         onChange={handleOnChange}
-                        className="bg-gray-700 text-white p-3 rounded border border-gray-600 focus:outline-none focus:border-blue-500 transition duration-500"
+                        className="bg-gray-700 text-white p-3 rounded border border-gray-600 focus:outline-none focus:border-orange-500 transition duration-500"
                         placeholder="Post your question"
                         rows={4}
                         required
                     />
                 </div>
 
+                {/* Warning Message */}
+                <p className="text-yellow-400 text-sm font-semibold">
+                    Warning: If you upload vulgar or inappropriate content, the content moderator will automatically delete it.
+                </p>
+
                 {/* Submit Button */}
                 <button 
                     type="submit" 
-                    className="bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-500"
+                    className="bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition duration-500"
                 >
                     Submit
                 </button>

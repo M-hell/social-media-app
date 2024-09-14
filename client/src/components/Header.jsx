@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/userSlice';
 import SearchUser from './SearchUser';
+import logo from '../assets/logo.png';
 
 function Header() {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ function Header() {
     };
 
     return (
-        <div className="navbar bg-base-100 rounded-2xl">
+        <div className="navbar bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white rounded-xl shadow-md p-2">
             <div className="navbar-start">
                 <div className="dropdown relative">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -46,7 +47,7 @@ function Header() {
                     </div>
                     <ul
                         tabIndex={0}
-                        className="menu menu-sm dropdown-content bg-black font-extrabold rounded-box mt-3 w-52 p-2 shadow-lg"
+                        className="menu menu-sm dropdown-content bg-gray-900 font-semibold text-white rounded-box mt-3 w-52 p-2 shadow-lg"
                         style={{ zIndex: 9999 }}
                     >
                         <li>
@@ -61,8 +62,11 @@ function Header() {
                     </ul>
                 </div>
             </div>
-            <div className="navbar-center">
-                <a className="btn btn-ghost text-3xl text-orange-500 nerko-one-regular font-bold">Laugh Daily</a>
+            <div className="navbar-center flex items-center space-x-2">
+                <div className="bg-orange-500 rounded-full p-2 flex items-center justify-center">
+                    <img src={logo} alt="Logo" className="h-8 w-8" />
+                </div>
+                <a className="btn btn-ghost text-2xl text-orange-500 font-bold nerko-one-regular tracking-wide">Laugh Daily</a>
             </div>
             <div className="navbar-end">
                 <button onClick={() => setOpenSearchUser(true)} className="btn btn-ghost btn-circle">

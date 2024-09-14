@@ -78,7 +78,7 @@ function AllPosts() {
       <div className="mb-4 flex justify-end">
         <Link
           to="/add-post"
-          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
+          className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-700 transition-colors duration-300"
         >
           Add Post
         </Link>
