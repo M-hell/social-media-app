@@ -15,11 +15,7 @@ function AllPosts() {
     const fetchPosts = async () => {
       try {
         const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/all-posts`;
-        const response = await axios({
-          method: 'GET',
-          url: URL,
-          withCredentials: true
-        });
+        const response = await axios.get(URL, { withCredentials: true });
         setPosts(response.data.data);
       } catch (error) {
         toast.error(error.message);
@@ -32,12 +28,7 @@ function AllPosts() {
   const handleUpvote = async (postId) => {
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/upvote`;
-      const response = await axios({
-        method: 'POST',
-        url: URL,
-        data: { postId },
-        withCredentials: true
-      });
+      await axios.post(URL, { postId }, { withCredentials: true });
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -54,12 +45,7 @@ function AllPosts() {
   const handleDownvote = async (postId) => {
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/downvote`;
-      const response = await axios({
-        method: 'POST',
-        url: URL,
-        data: { postId },
-        withCredentials: true
-      });
+      await axios.post(URL, { postId }, { withCredentials: true });
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -154,24 +140,24 @@ function AllPosts() {
                   <div className="text-gray-400 mb-4 text-sm sm:text-base">
                     <span>Comments: {post.comments.length}</span>
                   </div>
-                  <div className="flex flex-col mt-auto">
+                  <div className="flex flex-col mt-auto gap-2">
                     <button
                       onClick={() => handleUpvote(post._id)}
                       className="bg-green-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-green-600 transition-colors duration-300"
                     >
-                      <BiUpvote /> Upvote
+                      <BiUpvote className="mr-2" /> Upvote
                     </button>
                     <button
                       onClick={() => handleDownvote(post._id)}
                       className="bg-red-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-red-600 transition-colors duration-300"
                     >
-                      <BiDownvote /> Downvote
+                      <BiDownvote className="mr-2" /> Downvote
                     </button>
                     <button
                       onClick={() => toggleComments(post._id)}
-                      className="bg-blue-500 text-white py-1 flex justify-center items-center px-3 rounded-md hover:bg-blue-600 transition-colors duration-1000 mb-2"
+                      className="bg-blue-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-blue-600 transition-colors duration-300"
                     >
-                      <FaRegComment /> Comment
+                      <FaRegComment className="mr-2" /> Comment
                     </button>
 
                     {isCommentsOpen && (

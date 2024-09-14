@@ -10,19 +10,19 @@ function AllThreads() {
   const [posts, setPosts] = useState([]);
   const [expandedPosts, setExpandedPosts] = useState({});
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null); // Track the post with an open comment section
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true);
         const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/all-posts`;
-        const response = await axios({
-          method: 'GET',
-          url: URL,
-          withCredentials: true
-        });
+        const response = await axios.get(URL, { withCredentials: true });
         setPosts(response.data.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error('Error fetching posts: ' + error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -32,14 +32,9 @@ function AllThreads() {
   const handleUpvote = async (postId) => {
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/upvote`;
-      const response = await axios({
-        method: 'POST',
-        url: URL,
-        data: { postId },
-        withCredentials: true
-      });
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
+      await axios.post(URL, { postId }, { withCredentials: true });
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
           post._id === postId
             ? { ...post, upvotescount: post.upvotescount + 1 }
             : post
@@ -47,21 +42,16 @@ function AllThreads() {
       );
       toast.success('Upvote successful');
     } catch (error) {
-      toast.error(error.message);
+      toast.error('Error upvoting post: ' + error.message);
     }
   };
 
   const handleDownvote = async (postId) => {
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/downvote`;
-      const response = await axios({
-        method: 'POST',
-        url: URL,
-        data: { postId },
-        withCredentials: true
-      });
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
+      await axios.post(URL, { postId }, { withCredentials: true });
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
           post._id === postId
             ? { ...post, downvotescount: post.downvotescount + 1 }
             : post
@@ -69,12 +59,12 @@ function AllThreads() {
       );
       toast.success('Downvote successful');
     } catch (error) {
-      toast.error(error.message);
+      toast.error('Error downvoting post: ' + error.message);
     }
   };
 
   const handleToggleExpand = (postId) => {
-    setExpandedPosts((prevState) => ({
+    setExpandedPosts(prevState => ({
       ...prevState,
       [postId]: !prevState[postId]
     }));
@@ -83,6 +73,10 @@ function AllThreads() {
   const toggleComments = (postId) => {
     setOpenCommentsPostId(prevPostId => prevPostId === postId ? null : postId);
   };
+
+  if (loading) {
+    return <p className="text-lg text-gray-200">Loading Threads...</p>;
+  }
 
   return (
     <div className="p-4 bg-gray-900 text-gray-200 overflow-y-auto max-h-screen">
@@ -100,8 +94,8 @@ function AllThreads() {
       ) : (
         <div className="flex flex-col gap-4">
           {posts
-            .filter((post) => !post.postimg && post.description) // Show only posts without images and with descriptions
-            .map((post) => {
+            .filter(post => !post.postimg && post.description) // Show only posts without images and with descriptions
+            .map(post => {
               const maxLength = 150; 
               const shouldTruncate = post.description.length > maxLength;
               const truncatedDescription = shouldTruncate

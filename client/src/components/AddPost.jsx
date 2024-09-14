@@ -4,7 +4,6 @@ import uploadFile from '../helpers/uploadFile';
 import { useNavigate } from 'react-router-dom';
 import { IoClose } from "react-icons/io5";
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
 
 function AddPost() {
     const [data, setData] = useState({
@@ -13,6 +12,7 @@ function AddPost() {
     });
 
     const [uploadPhoto, setUploadPhoto] = useState(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleOnChange = (e) => {
@@ -25,13 +25,21 @@ function AddPost() {
 
     const handleUploadPhoto = async (e) => {
         const file = e.target.files[0];
-        const uploadedFile = await uploadFile(file); // assuming uploadFile returns the URL of the uploaded file
-        setUploadPhoto(URL.createObjectURL(file)); // Set the preview of the uploaded image
-
-        setData((prev) => ({
-            ...prev,
-            postimg: uploadedFile?.url // Storing the image URL in the form data
-        }));
+        if (file) {
+            setLoading(true);
+            try {
+                const uploadedFile = await uploadFile(file); // Assuming uploadFile returns the URL of the uploaded file
+                setUploadPhoto(URL.createObjectURL(file)); // Set the preview of the uploaded image
+                setData((prev) => ({
+                    ...prev,
+                    postimg: uploadedFile?.url // Storing the image URL in the form data
+                }));
+            } catch (error) {
+                toast.error('Error uploading photo. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        }
     };
 
     const handleClearUploadPhoto = (e) => {
@@ -47,16 +55,22 @@ function AddPost() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check if the image is uploaded
         if (!data.postimg) {
             toast.error('Please upload an image before submitting.');
             return;
         }
 
+        if (!data.description.trim()) {
+            toast.error('Please enter a description.');
+            return;
+        }
+
+        setLoading(true);
+
         try {
             const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/add-post`;
             const response = await axios.post(URL, data, {
-                withCredentials: true,  // Include credentials such as cookies
+                withCredentials: true,
             });
             if (response.status === 200) {
                 toast.success('Post uploaded successfully!');
@@ -65,6 +79,8 @@ function AddPost() {
         } catch (error) {
             console.error('Error uploading post:', error);
             toast.error('Failed to upload post. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -93,7 +109,7 @@ function AddPost() {
                             {uploadPhoto ? "Photo selected" : "Upload post image"}
                         </p>
                         {uploadPhoto && (
-                            <button className='text-lg ml-2 hover:text-red-600' onClick={handleClearUploadPhoto}>
+                            <button className='text-lg ml-2 hover:text-red-600' onClick={handleClearUploadPhoto} aria-label="Clear photo">
                                 <IoClose />
                             </button>
                         )}
@@ -135,9 +151,10 @@ function AddPost() {
                 {/* Submit Button */}
                 <button 
                     type="submit" 
-                    className="bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-500"
+                    className={`bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={loading}
                 >
-                    Submit
+                    {loading ? 'Submitting...' : 'Submit'}
                 </button>
             </form>
         </div>

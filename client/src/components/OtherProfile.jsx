@@ -126,9 +126,17 @@ function OtherProfile() {
 
   return (
     <div>
+
       {user ? (
         <div>
           <OtherProfileCard user={user} />
+          <div className="join mb-4 w-full lg:w-auto flex justify-center my-3">
+            <button
+              className='btn join-item bg-gray-600 text-gray-300'
+            >
+              Posts and Threads
+            </button>
+          </div>
           <div className="flex flex-col items-center mt-4">
             {visiblePosts.map((post) => {
               const isExpanded = expandedPosts[post._id];

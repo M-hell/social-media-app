@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FaTimes } from 'react-icons/fa'; // Example close icon
@@ -16,28 +16,25 @@ function Comments({ postId, onClose, previousComments = [] }) {
 
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/add-comment`;
-      const response = await axios({
-        method: 'POST',
-        url: URL,
-        data: { postId, commentContent },
-        withCredentials: true,
-      });
-      console.log(response.data.data);
+      const response = await axios.post(URL, { postId, commentContent }, { withCredentials: true });
 
       // Update the local comments list
-      setComments(prev => [...prev, response.data.data]);
+      setComments(prevComments => [...prevComments, response.data.data]);
       setCommentContent(''); // Clear the comment input
-      console.log("Comment added successfully",comments);
       toast.success("Comment added successfully!");
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
       <div className="bg-gray-800 p-6 rounded-md shadow-md relative w-4/5 max-w-2xl text-white">
-        <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-200" onClick={onClose}>
+        <button
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-200"
+          onClick={onClose}
+          aria-label="Close comments"
+        >
           <FaTimes size={20} />
         </button>
 
@@ -51,7 +48,7 @@ function Comments({ postId, onClose, previousComments = [] }) {
                 {/* Profile Picture */}
                 <img
                   src={comment.msgbyuserid?.profile_pic || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'}
-                  alt="User Avatar"
+                  alt={comment.msgbyuserid?.name || 'User Avatar'}
                   className="w-10 h-10 rounded-full mr-4"
                 />
                 
@@ -74,6 +71,7 @@ function Comments({ postId, onClose, previousComments = [] }) {
             placeholder="Add a comment"
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
+            aria-label="New comment"
           />
         </div>
 
