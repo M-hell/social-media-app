@@ -17,6 +17,8 @@ const otherUserDetails=require('../controllers/otherUserDetails.js')
 const increaseFollowing=require('../controllers/increaseFollowing.js')
 const allFollowersFollowing=require('../controllers/allFollowersFollowing.js')
 const ranking=require('../controllers/ranking.js')
+// const imageModerator=require('../controllers/ImageModerator.js')
+const ContentModerator=require('../controllers/ContentModerator.js')
 
 //user registering
 router.post('/register',registerUser)
@@ -65,5 +67,11 @@ router.post('/all-followers-following',allFollowersFollowing)
 
 //ranking
 router.post('/ranking',ranking)
+
+//image moderation check
+// router.post('/moderate-image',imageModerator)
+
+//content moderation check
+router.post('/moderate-content',ContentModerator)
 
 module.exports=router

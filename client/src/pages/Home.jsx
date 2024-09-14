@@ -6,6 +6,7 @@ import { logout, setUser } from '../redux/userSlice';
 import Header from '../components/Header';
 import UserSidebar from '../components/UserSidebar';
 import { Outlet } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Home = () => {
   const user = useSelector(state => state.user);
@@ -36,10 +37,25 @@ const Home = () => {
       console.log("Error fetching user details:", error);
     }
   };
+  const ContentModerator = async () => {
+    try {
+      const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/moderate-content`;
+      const response = await axios({
+        url: URL,
+        method: 'POST',
+      });
+
+      console.log("deleted moderated content");
+      toast.success("content moderated successfully");
+    } catch (error) {
+      console.log("Error fetching user details:", error);
+    }
+  }
 
   // Fetch user details when component mounts
   useEffect(() => {
     fetchUserDetails();
+    ContentModerator();
   }, []);
 
   // Log whenever the data state changes
