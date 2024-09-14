@@ -5,12 +5,15 @@ import { Link } from 'react-router-dom';
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
 import Comments from './Comments';
+import { useNavigate } from 'react-router-dom';
 
 function AllThreads() {
   const [posts, setPosts] = useState([]);
   const [expandedPosts, setExpandedPosts] = useState({});
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null); // Track the post with an open comment section
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -109,7 +112,7 @@ function AllThreads() {
                   key={post._id}
                   className="bg-gray-800 shadow-lg rounded-lg overflow-hidden p-4 flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl duration-1000 mx-auto w-full sm:w-[600px] md:w-[800px]"
                 >
-                  <div className="flex items-center mb-4">
+                  <div onClick={() => navigate(`/${post?.author?._id}`)} className="flex items-center cursor-pointer hover:bg-zinc-900 transition-all duration-1000 p-2 rounded-lg hover:text-blue-700 mb-4 text-gray-200">
                     <img
                       src={post.author.profile_pic || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'}
                       alt={post.author.name}
