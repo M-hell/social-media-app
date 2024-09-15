@@ -144,52 +144,6 @@ io.on('connection', async (socket) => {
         }
     });
 
-
-    socket.on('sidebar', async (currentUserId) => {
-        console.log("Current user ID for sidebar:", currentUserId);
-
-        let conversation;
-        try {
-            conversation = await getConversation(currentUserId);
-        } catch (error) {
-            console.error("Error fetching sidebar conversation:", error);
-            return;
-        }
-
-        socket.emit('conversation', conversation);
-    });
-
-    socket.on('seen', async (msgByUserId) => {
-        try {
-            const conversation = await ConversationModel.findOne({
-                "$or": [
-                    { sender: user._id, receiver: msgByUserId },
-                    { sender: msgByUserId, receiver: user._id }
-                ]
-            });
-
-            if (!conversation) {
-                console.error("Conversation not found");
-                return;
-            }
-
-            const conversationMessageIds = conversation.messages || [];
-
-            await MessageModel.updateMany(
-                { _id: { "$in": conversationMessageIds }, msgByUserId: msgByUserId },
-                { "$set": { seen: true } }
-            );
-
-            const conversationSender = await getConversation(user._id.toString());
-            const conversationReceiver = await getConversation(msgByUserId);
-
-            io.to(user._id.toString()).emit('conversation', conversationSender);
-            io.to(msgByUserId).emit('conversation', conversationReceiver);
-        } catch (error) {
-            console.error('Error marking messages as seen:', error);
-        }
-    });
-
     socket.on('disconnect', () => {
         if (user?._id) {
             onlineUser.delete(user._id.toString());

@@ -82,7 +82,7 @@ function OtherProfile() {
       const response = await axios.post(URL, { userId }, { withCredentials: true });
       if (response.data && response.data.data) {
         setUser(response.data.data);
-        toast.success(response.data.message || 'User data fetched successfully');
+        console.log(response.data.message || 'User data fetched successfully');
       } else {
         throw new Error('Unexpected response structure');
       }

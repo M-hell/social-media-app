@@ -22,7 +22,7 @@ async function allPosts(request, response) {
                     select: '-password'  // Populate name and profile picture
                 }
             })
-            .sort({ updatedAt: -1 });  // Sort by latest updated
+            .sort({  createdAt: -1 });  // Sort by created
 
         return response.json({
             message: "All posts",

@@ -6,7 +6,6 @@ import { logout, setUser, setOnlineUser, setSocketConnection } from '../redux/us
 import Header from '../components/Header';
 import UserSidebar from '../components/UserSidebar';
 import { Outlet } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import io from 'socket.io-client';
 
 const Home = () => {
@@ -43,7 +42,7 @@ const Home = () => {
         url: URL,
         method: 'POST',
       });
-      toast.success("Content moderated successfully");
+      console.log("Content moderated successfully");
     } catch (error) {
       console.log("Error moderating content:", error);
     }
