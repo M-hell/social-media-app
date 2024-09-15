@@ -46,8 +46,8 @@ function UserSidebar() {
             <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
 
             <div className="drawer-content flex flex-col items-center justify-center">
-                <label htmlFor="my-drawer-3" className="text-3xl flex justify-center items-center drawer-button lg:hidden">
-                    <FaUserFriends /> Open Friends List
+                <label htmlFor="my-drawer-3" className="flex justify-center items-center drawer-button lg:hidden">
+                    <FaUserFriends className='text-3xl ' /> Open Friends List
                 </label>
             </div>
 
