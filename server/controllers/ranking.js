@@ -15,9 +15,9 @@ async function ranking(request, response) {
 
         let sortCriteria;
         if (sortby === "upvotes") {
-            sortCriteria = { upvotes: 1 }; // Sort by upvotes in ascending order
+            sortCriteria = { upvotes: -1 }; 
         } else if (sortby === "followers") {
-            sortCriteria = { followers: 1 }; // Sort by followers in ascending order
+            sortCriteria = { followers: -1 }; 
         } else {
             return response.status(400).json({
                 message: "Invalid sort criteria",
