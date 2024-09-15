@@ -75,8 +75,13 @@ function UserSidebar() {
                                         <span className="block text-sm font-medium cursor-pointer hover:text-orange-500">
                                             {user.name}
                                         </span>
+                                        <span className="block text-xs text-gray-400">
+                                            {user.email}
+                                        </span>
                                     </div>
-                                    <div onClick={() => navigate(`/message/${user._id}`)} className="cursor-pointer hover:text-orange-600" title='Chat'><IoChatbubbleEllipsesSharp /></div>
+                                    <div onClick={() => navigate(`/message/${user._id}`)} className="cursor-pointer hover:text-orange-600" title='Chat'>
+                                        <IoChatbubbleEllipsesSharp />
+                                    </div>
                                 </div>
                             ))}
                         </ul>

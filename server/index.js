@@ -30,6 +30,14 @@ const router=require('./routes/index.js')
 app.use('/api',router)
 
 
+//for deploying
+const path=require('path');
+app.use(express.static(path.join(__dirname, "../client/dist")));
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+
+
 //db connection
 const connectDB=require('./db/connectDb')
 connectDB().then(()=>{
