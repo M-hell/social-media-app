@@ -20,7 +20,7 @@ function UserSidebar() {
             const response = await axios.post(URL, { _id }, { withCredentials: true });
 
             if (response.data.data.length === 0) {
-                toast.error("No users found");
+                toast.success("Add friends by clicking on search bar at top right");
             } else {
                 const uniqueUsers = Array.from(new Set(response.data.data.map(user => user._id)))
                     .map(id => response.data.data.find(user => user._id === id));
