@@ -46,8 +46,8 @@ function UserSidebar() {
             <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
 
             <div className="drawer-content flex flex-col items-center justify-center">
-                <label htmlFor="my-drawer-3" className="text-3xl drawer-button lg:hidden">
-                    <FaUserFriends />
+                <label htmlFor="my-drawer-3" className="text-3xl flex justify-center items-center drawer-button lg:hidden">
+                    <FaUserFriends /> Open Friends List
                 </label>
             </div>
 
@@ -72,10 +72,10 @@ function UserSidebar() {
                                         className="w-12 h-12 object-cover rounded-full border border-gray-300"
                                     />
                                     <div onClick={() => navigate(`/${user._id}`)} className="flex-1 cursor-pointer">
-                                        <span className="block text-sm font-medium cursor-pointer hover:text-orange-500">
+                                        <span className="block text-sm font-medium truncate max-w-[100px] md:max-w-[150px] hover:text-orange-500">
                                             {user.name}
                                         </span>
-                                        <span className="block text-xs text-gray-400 truncate max-w-[150px]" title={user.email}>
+                                        <span className="block text-xs text-gray-400 truncate max-w-[100px] md:max-w-[150px]" title={user.email}>
                                             {user.email}
                                         </span>
                                     </div>
