@@ -75,7 +75,7 @@ function UserSidebar() {
                                         <span className="block text-sm font-medium cursor-pointer hover:text-orange-500">
                                             {user.name}
                                         </span>
-                                        <span className="block text-xs text-gray-400">
+                                        <span className="block text-xs text-gray-400 truncate max-w-[150px]" title={user.email}>
                                             {user.email}
                                         </span>
                                     </div>

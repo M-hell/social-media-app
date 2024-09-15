@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 function AllThreads() {
   const [posts, setPosts] = useState([]);
   const [expandedPosts, setExpandedPosts] = useState({});
-  const [openCommentsPostId, setOpenCommentsPostId] = useState(null); // Track the post with an open comment section
+  const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -99,7 +99,7 @@ function AllThreads() {
           {posts
             .filter(post => !post.postimg && post.description) // Show only posts without images and with descriptions
             .map(post => {
-              const maxLength = 150; 
+              const maxLength = 150;
               const shouldTruncate = post.description.length > maxLength;
               const truncatedDescription = shouldTruncate
                 ? `${post.description.substring(0, maxLength)}...`
@@ -110,7 +110,9 @@ function AllThreads() {
               return (
                 <div
                   key={post._id}
-                  className="bg-gray-800 shadow-lg rounded-lg overflow-hidden p-4 flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl duration-1000 mx-auto w-full sm:w-[600px] md:w-[800px]"
+                  className={`bg-gray-800 shadow-lg rounded-lg overflow-hidden p-4 flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl duration-1000 mx-auto w-full sm:w-[600px] md:w-[800px] ${
+                    isCommentsOpen ? 'min-h-[400px]' : 'min-h-[200px]'
+                  }`}
                 >
                   <div onClick={() => navigate(`/${post?.author?._id}`)} className="flex items-center cursor-pointer hover:bg-zinc-900 transition-all duration-1000 p-2 rounded-lg hover:text-blue-700 mb-4 text-gray-200">
                     <img
@@ -162,7 +164,9 @@ function AllThreads() {
                     </button>
 
                     {isCommentsOpen && (
-                      <Comments postId={post._id} previousComments={post.comments} onClose={() => setOpenCommentsPostId(null)} />
+                      <div className="max-h-[300px] overflow-y-auto">
+                        <Comments postId={post._id} previousComments={post.comments} onClose={() => setOpenCommentsPostId(null)} />
+                      </div>
                     )}
                   </div>
                 </div>

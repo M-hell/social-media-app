@@ -25,12 +25,12 @@ function AddThread() {
                 withCredentials: true,  // Include credentials such as cookies
             });
             if (response.status === 200) {
-                toast.success('Post uploaded successfully!');
+                toast.success('Thread uploaded successfully!');
                 navigate('/all-threads'); // Navigate to threads page after successful upload
             }
         } catch (error) {
-            console.error('Error uploading post:', error);
-            toast.error('Failed to upload post. Please try again.');
+            console.error('Error uploading thread:', error);
+            toast.error('Failed to upload thread. Please try again.');
         }
     };
 

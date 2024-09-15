@@ -76,12 +76,12 @@ function Ranking() {
                                 <div className="flex-1 flex flex-col">
                                     <h2 className="text-lg flex justify-center items-center font-bold mb-1">{user.name}</h2>
                                     <p className="text-sm flex justify-center items-center text-gray-400 mb-2">{user.email}</p>
-                                    <div className="flex space-x-4">
-                                        <div className="flex flex-col items-center">
+                                    <div className="flex justify-center items-center space-x-4">
+                                        <div className="flex flex-col justify-center items-center">
                                             <span className="text-sm font-semibold">{user.upvotes}</span>
                                             <span className="text-xs text-gray-400">Upvotes</span>
                                         </div>
-                                        <div className="flex flex-col items-center">
+                                        <div className="flex flex-col justify-center items-center">
                                             <span className="text-sm font-semibold">{user.followers.length}</span>
                                             <span className="text-xs text-gray-400">Followers</span>
                                         </div>
