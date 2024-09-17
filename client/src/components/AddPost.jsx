@@ -4,6 +4,7 @@ import uploadFile from '../helpers/uploadFile';
 import { useNavigate } from 'react-router-dom';
 import { IoClose } from "react-icons/io5";
 import toast from 'react-hot-toast';
+import * as nsfwjs from 'nsfwjs';
 
 function AddPost() {
     const [data, setData] = useState({
@@ -52,6 +53,31 @@ function AddPost() {
         }));
     };
 
+    // NSFW Check function
+    const checkImageForNSFW = async (imageUrl) => {
+        const model = await nsfwjs.load();
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = imageUrl;
+
+        return new Promise((resolve, reject) => {
+            img.onload = async () => {
+                const predictions = await model.classify(img);
+                console.log('NSFW Probability:', predictions);
+
+                const pornPrediction = predictions.find(p => p.className === 'Porn');
+                const hentaiPrediction = predictions.find(p => p.className === 'Hentai');
+
+                const pornProbability = pornPrediction?.probability || 0;
+                const hentaiProbability = hentaiPrediction?.probability || 0;
+
+                // Return both probabilities
+                resolve({ pornProbability, hentaiProbability });
+            };
+            img.onerror = reject;
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -68,10 +94,20 @@ function AddPost() {
         setLoading(true);
 
         try {
+            // Check the image for NSFW content before uploading
+            const { pornProbability, hentaiProbability } = await checkImageForNSFW(data.postimg);
+
+            if (pornProbability > 0.8 || hentaiProbability > 0.8) {
+                toast.error('Image contains vulgar content. Please upload a different image.');
+                setLoading(false);
+                return;
+            }
+
             const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/add-post`;
             const response = await axios.post(URL, data, {
                 withCredentials: true,
             });
+
             if (response.status === 200) {
                 toast.success('Post uploaded successfully!');
                 navigate('/'); // Navigate to home after successful upload
@@ -148,13 +184,19 @@ function AddPost() {
                     />
                 </div>
 
+                {/* Warning Box */}
+                <div className="bg-red-100 text-red-700 p-4 rounded-lg border border-red-500">
+                    <p className="text-sm font-bold">Warning:</p>
+                    <p className="text-sm">If the image or description contains any vulgar content, the post will not be uploaded or deleted afterwards automatically by moderator.</p>
+                </div>
+
                 {/* Submit Button */}
                 <button 
                     type="submit" 
                     className={`bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition duration-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     disabled={loading}
                 >
-                    {loading ? 'Submitting...' : 'Submit'}
+                    {loading ? 'Checking for inappropriate content...' : 'Submit'}
                 </button>
             </form>
         </div>
