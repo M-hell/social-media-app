@@ -5,7 +5,7 @@ const express=require('express')
 const PORT=process.env.PORT || 3000
 
 
-//cors setup
+//cors setup for cross origin requests
 const cors=require('cors')
 app.use(cors(
     {
@@ -14,7 +14,7 @@ app.use(cors(
         credentials: true
     }
 ))
-
+    
 
 //cookie parser
 const cookiesParser=require('cookie-parser')
