@@ -65,21 +65,21 @@ function UserSidebar() {
                     ) : (
                         <ul className="space-y-2">
                             {users.map((user) => (
-                                <div key={user._id} className="bg-gray-600 hover:border hover:border-orange-500 hover:bg-slate-950 text-white rounded-lg shadow-sm p-2 flex items-center space-x-3">
+                                <div key={user._id} className="bg-gray-600 hover:border hover:border-orange-500 hover:bg-slate-950 text-white rounded-lg shadow-sm p-2 flex items-center space-x-3 overflow-hidden">
                                     <img
                                         src={user.profile_pic || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'}
                                         alt={user.name || 'Default User'}
-                                        className="w-12 h-12 object-cover rounded-full border border-gray-300"
+                                        className="w-12 h-12 object-cover rounded-full border border-gray-300 flex-shrink-0"
                                     />
-                                    <div onClick={() => navigate(`/${user._id}`)} className="flex-1 cursor-pointer">
-                                        <span className="block text-sm font-medium truncate max-w-[100px] md:max-w-[150px] hover:text-orange-500">
+                                    <div onClick={() => navigate(`/${user._id}`)} className="flex-1 cursor-pointer overflow-hidden">
+                                        <span className="block text-sm font-medium truncate max-w-[80px] md:max-w-[120px] hover:text-orange-500">
                                             {user.name}
                                         </span>
-                                        <span className="block text-xs text-gray-400 truncate max-w-[100px] md:max-w-[150px]" title={user.email}>
+                                        <span className="block text-xs text-gray-400 truncate max-w-[80px] md:max-w-[120px]" title={user.email}>
                                             {user.email}
                                         </span>
                                     </div>
-                                    <div onClick={() => navigate(`/message/${user._id}`)} className="cursor-pointer hover:text-orange-600" title='Chat'>
+                                    <div onClick={() => navigate(`/message/${user._id}`)} className="cursor-pointer hover:text-orange-600 flex-shrink-0" title='Chat'>
                                         <IoChatbubbleEllipsesSharp />
                                     </div>
                                 </div>
