@@ -1,51 +1,51 @@
-# Social Media App
+# LPU Social Media App
 
-A modern social media application built with the MERN stack (MongoDB, Express, React, Node.js) and Redux Toolkit for state management. This app integrates AI for content moderation and ensures a safe user experience.
-- [visit site](https://social-media-app-rfuc.onrender.com)
+DEPLOY LINK = [https://social-media-app-rfuc.onrender.com/]
+
+Welcome to the LPU Social Media App! This platform is designed specifically for LPU students to connect, share content, and access various facilities all in one place. Our goal is to create a safe and engaging environment for students while also utilizing AI to analyze content and assist in academic performance.
+
+## Problem Statement
+
+The app addresses several key problems, including:
+
+1. **Content Moderation**: Analyzing vulgar or inappropriate content from the platform using AI. We leverage the latest machine learning models to detect and filter out NSFW (Not Safe For Work) content in real time.
+   
+2. **Academic Assistance**: Providing suggestions for improving students' academic performance based on their CGPA and offering study tips and recommendations when needed.
 
 ## Features
 
-- **User Authentication & Authorization:** Secure user registration and login using JWT.
-- **Profile Management:** Users can create, update, and view profiles. Follow and unfollow other users.
-- **Posts & Comments:** Users can create, view, edit, and delete posts. They can also like, dislike, and comment on posts.
-- **Content Moderation:** AI integration using Gemini for text moderation to detect inappropriate or harmful content.
-- **Image Moderation:** NSFW package integration for automatic image moderation to detect and prevent inappropriate images.
-- **Real-Time Notifications:** Users receive real-time updates for activities such as likes, comments, and follows.
-- **Responsive Design:** The application is fully responsive and optimized for all devices using Tailwind CSS.
-- **Efficient State Management:** The application uses Redux Toolkit for managing application state seamlessly.
+- **Content Analysis**: All videos, messages, posts, threads, and pictures are analyzed using Hugging Face's NSFW and Gemini models to detect inappropriate content. The system tracks warnings and keeps a record of guideline violations.
+  
+- **CGPA Prediction**: The app can predict a student's CGPA based on their academic history and performance. It also offers suggestions for improving academic performance if the predicted CGPA is low.
+
+- **Video Calling**: The app provides a seamless video calling feature for students to connect with each other in real-time.
+
+- **Posts and Threads**: Students can post content, create threads, and engage with each other. Posts are automatically analyzed for inappropriate content to ensure a safe environment.
+
+- **LPU UMS Integration**: Integrated with LPU's UMS (University Management System), providing easy access to academic records and related services.
 
 ## Tech Stack
 
-- **Frontend:**
-  - [React](https://reactjs.org/)
-  - [Redux Toolkit](https://redux-toolkit.js.org/)
-  - [Tailwind CSS](https://tailwindcss.com/)
-  
-- **Backend:**
-  - [Node.js](https://nodejs.org/)
-  - [Express](https://expressjs.com/)
-  - [MongoDB](https://www.mongodb.com/)
-  - [Socket.IO](https://socket.io/) (for real-time notifications)
-  
-- **AI Integration:**
-  - [Gemini AI]([https://example.com/gemini](https://ai.google.dev/aistudio)) (for content moderation) 
-  - [NSFWJS](https://github.com/infinitered/nsfwjs) (for image moderation)
+- **Frontend**:
+  - Next.js
+  - React.js
+  - Tailwind CSS
+  - TypeScript
 
-## Getting Started
+- **Backend**:
+  - Node.js
+  - Express.js
+
+- **AI and Machine Learning**:
+  - Video anomaly detection using Hugging Face Models
+  - NSFW Detection using npm package
+  - Gemini AI for Content Analysis and CGPA Prediction
+
+- **Other Technologies**:
+  - Web Scraped Repositories from GitHub
+  - Real-Time Video Calling
 
 ### Prerequisites
-
-- Node.js and npm installed on your machine.
-- MongoDB installed or access to a MongoDB cloud instance.
-
-### Installation
-  **Setup the envs and run the following commands**
-   ```bash
-   git clone https://github.com/username/social-media-app.git](https://github.com/M-hell/social-media-app.git
-   cd server
-   npm i
-   npm run dev
-   cd client
-   npm i
-   npm run dev
-
+  LPU UMS REPO - [https://github.com/choxxin/LPU_profile_dep]
+  Meow Meet for video calling repo - [https://github.com/choxxin/Meow_meet]
+  
