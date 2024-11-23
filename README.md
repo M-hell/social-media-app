@@ -1,5 +1,7 @@
 # LPU Social Media App
 
+DEPLOY LINK = [https://social-media-app-rfuc.onrender.com/]
+
 Welcome to the LPU Social Media App! This platform is designed specifically for LPU students to connect, share content, and access various facilities all in one place. Our goal is to create a safe and engaging environment for students while also utilizing AI to analyze content and assist in academic performance.
 
 ## Problem Statement
