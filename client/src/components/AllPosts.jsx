@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 function AllPosts() {
   const [posts, setPosts] = useState([]);
   const [expandedPosts, setExpandedPosts] = useState({});
-  const [openCommentsPostId, setOpenCommentsPostId] = useState(null); 
+  const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -70,7 +70,7 @@ function AllPosts() {
   };
 
   const toggleComments = (postId) => {
-    setOpenCommentsPostId(prevPostId => prevPostId === postId ? null : postId);
+    setOpenCommentsPostId((prevPostId) => (prevPostId === postId ? null : postId));
   };
 
   return (
@@ -91,7 +91,7 @@ function AllPosts() {
           {posts
             .filter((post) => post.postimg) // Filter out posts without images
             .map((post) => {
-              const maxLength = 150; 
+              const maxLength = 150;
               const shouldTruncate = post.description.length > maxLength;
               const truncatedDescription = shouldTruncate
                 ? `${post.description.substring(0, maxLength)}...`
@@ -104,13 +104,19 @@ function AllPosts() {
                   key={post._id}
                   className="bg-gray-800 shadow-lg rounded-lg overflow-hidden p-4 flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl duration-1000 mx-auto w-full sm:w-[600px] md:w-[800px]"
                 >
-                  <div onClick={() => navigate(`/${post?.author?._id}`)} className="flex items-center cursor-pointer hover:bg-zinc-900 transition-all duration-1000 p-2 rounded-lg hover:text-blue-700 mb-4 text-gray-200">
+                  <div
+                    onClick={() => navigate(`/${post?.author?._id}`)}
+                    className="flex items-center cursor-pointer hover:bg-zinc-900 transition-all duration-1000 p-2 rounded-lg hover:text-blue-700 mb-4 text-gray-200"
+                  >
                     <img
-                      src={post.author.profile_pic || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'}
+                      src={
+                        post.author.profile_pic ||
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'
+                      }
                       alt={post.author.name}
                       className="w-12 h-12 rounded-full object-cover mr-3"
                     />
-                    <span className="text-lg font-semibold ">{post.author.name}</span>
+                    <span className="text-lg font-semibold">{post.author.name}</span>
                   </div>
 
                   {post.postimg && (
@@ -143,30 +149,36 @@ function AllPosts() {
                   <div className="text-gray-400 mb-4 text-sm sm:text-base">
                     <span>Comments: {post.comments.length}</span>
                   </div>
-                  <div className="flex flex-col mt-auto gap-2">
+
+                  {/* Responsive Buttons */}
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-4 mt-auto">
                     <button
                       onClick={() => handleUpvote(post._id)}
-                      className="bg-green-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-green-600 transition-colors duration-300"
+                      className="bg-green-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-green-600 transition-colors duration-300 w-full sm:w-auto"
                     >
                       <BiUpvote className="mr-2" /> Upvote
                     </button>
                     <button
                       onClick={() => handleDownvote(post._id)}
-                      className="bg-red-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-red-600 transition-colors duration-300"
+                      className="bg-red-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-red-600 transition-colors duration-300 w-full sm:w-auto"
                     >
                       <BiDownvote className="mr-2" /> Downvote
                     </button>
                     <button
                       onClick={() => toggleComments(post._id)}
-                      className="bg-blue-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-blue-600 transition-colors duration-300"
+                      className="bg-blue-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-blue-600 transition-colors duration-300 w-full sm:w-auto"
                     >
                       <FaRegComment className="mr-2" /> Comment
                     </button>
-
-                    {isCommentsOpen && (
-                      <Comments postId={post._id} previousComments={post.comments} onClose={() => setOpenCommentsPostId(null)} />
-                    )}
                   </div>
+
+                  {isCommentsOpen && (
+                    <Comments
+                      postId={post._id}
+                      previousComments={post.comments}
+                      onClose={() => setOpenCommentsPostId(null)}
+                    />
+                  )}
                 </div>
               );
             })}
