@@ -26,6 +26,10 @@ const messageSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
+    },
+    contentmoderationcheck: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

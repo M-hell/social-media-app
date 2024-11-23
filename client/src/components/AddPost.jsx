@@ -97,7 +97,7 @@ function AddPost() {
             // Check the image for NSFW content before uploading
             const { pornProbability, hentaiProbability } = await checkImageForNSFW(data.postimg);
 
-            if (pornProbability > 0.8 || hentaiProbability > 0.8) {
+            if (pornProbability > 0.5 || hentaiProbability > 0.5) {
                 toast.error('Image contains vulgar content. Please upload a different image.');
                 setLoading(false);
                 return;
