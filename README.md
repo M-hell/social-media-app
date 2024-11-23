@@ -35,6 +35,10 @@ The app addresses several key problems, including:
 - **Backend**:
   - Node.js
   - Express.js
+
+- **State management**:
+  - Redux Toolkit
+  - Zustand
    
 - **External Frameworks**:
   - Clerk authentication 
