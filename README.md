@@ -35,11 +35,15 @@ The app addresses several key problems, including:
 - **Backend**:
   - Node.js
   - Express.js
+   
+- **External Frameworks**:
+  - Clerk authentication 
+  - Stream video calling 
 
 - **AI and Machine Learning**:
   - Video anomaly detection using Hugging Face Models
   - NSFW Detection using npm package
-  - Gemini AI for Content Analysis and CGPA Prediction
+  - Gemini AI for Content Analysis and CGPA analysis
 
 - **Other Technologies**:
   - Web Scraped Repositories from GitHub
