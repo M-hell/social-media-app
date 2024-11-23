@@ -1,6 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const PostModel = require('../models/PostModel');
 const { ConversationModel, MessageModel } = require('../models/ConversationModel');
+const UserModel = require('../models/UserModel');
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -48,12 +49,31 @@ const ContentModerator = async (req, res) => {
                     console.error(`Post with ID ${post._id} was blocked due to safety concerns. Deleting post...`);
                     await PostModel.findByIdAndDelete(post._id);
                     deletedPosts.push(post);
+
+                    // Increase warning count for the user
+                    if (post.author) {
+                        const user = await UserModel.findById(post.author);
+                        if (user) {
+                            user.warningcount = (user.warningcount || 0) + 1;
+                            await user.save();
+                        }
+                    }
+
                     continue;
                 }
 
                 if (responseText.toLowerCase().includes("yes")) {
                     deletedPosts.push(post);
                     await PostModel.findByIdAndDelete(post._id);
+
+                    // Increase warning count for the user
+                    if (post.author) {
+                        const user = await UserModel.findById(post.author);
+                        if (user) {
+                            user.warningcount = (user.warningcount || 0) + 1;
+                            await user.save();
+                        }
+                    }
                 } else {
                     post.contentmoderationcheck = true;
                     await post.save();
@@ -82,12 +102,31 @@ const ContentModerator = async (req, res) => {
                     console.error(`Message with ID ${message._id} was blocked due to safety concerns. Deleting message...`);
                     await MessageModel.findByIdAndDelete(message._id);
                     deletedMessages.push(message);
+
+                    // Increase warning count for the user
+                    if (message.msgByUserId) {
+                        const user = await UserModel.findById(message.msgByUserId);
+                        if (user) {
+                            user.warningcount = (user.warningcount || 0) + 1;
+                            await user.save();
+                        }
+                    }
+
                     continue;
                 }
 
                 if (responseText.toLowerCase().includes("yes")) {
                     deletedMessages.push(message);
                     await MessageModel.findByIdAndDelete(message._id);
+
+                    // Increase warning count for the user
+                    if (message.msgByUserId) {
+                        const user = await UserModel.findById(message.msgByUserId);
+                        if (user) {
+                            user.warningcount = (user.warningcount || 0) + 1;
+                            await user.save();
+                        }
+                    }
                 } else {
                     message.contentmoderationcheck = true;
                     await message.save();
