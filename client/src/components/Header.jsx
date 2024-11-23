@@ -68,22 +68,23 @@ function Header() {
                 </div>
                 <a className="btn btn-ghost text-2xl text-orange-500 font-bold nerko-one-regular tracking-wide">Laugh Daily</a>
             </div>
-            <div className="navbar-end">
-                <button onClick={() => setOpenSearchUser(true)} className="btn btn-ghost btn-circle">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                    </svg>
+            <div className="navbar-end flex items-center space-x-4">
+                {/* Video Calling Button */}
+                <a
+                    href="https://meow-meet.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-500 text-white rounded-full py-2 px-4 flex items-center space-x-2 hover:bg-blue-600 transition duration-300"
+                >
+                    <span>Video Calling</span>
+                </a>
+                
+                {/* Search Button */}
+                <button 
+                    onClick={() => setOpenSearchUser(true)} 
+                    className="bg-orange-500 text-white rounded-full py-2 px-4 hover:bg-orange-600 transition duration-300 flex items-center justify-center"
+                >
+                    Search
                 </button>
             </div>
             {openSearchUser && (
