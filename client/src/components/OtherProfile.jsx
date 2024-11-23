@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'; 
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; 
 import axios from 'axios'; 
-import toast from 'react-hot-toast';
-import Loading from './Loading';
-import OtherProfileCard from './OtherProfileCard';
-import { BiUpvote, BiDownvote } from "react-icons/bi";
-import { FaRegComment } from "react-icons/fa";
+import toast from 'react-hot-toast'; 
+import Loading from './Loading'; 
+import OtherProfileCard from './OtherProfileCard'; 
+import { BiUpvote, BiDownvote } from "react-icons/bi"; 
+import { FaRegComment } from "react-icons/fa"; 
 import Comments from './Comments';
 
 function OtherProfile() {
@@ -16,7 +16,7 @@ function OtherProfile() {
   const [posts, setPosts] = useState([]);
   const [expandedPosts, setExpandedPosts] = useState({});
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
-  
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -108,6 +108,12 @@ function OtherProfile() {
       {user ? (
         <div>
           <OtherProfileCard user={user} />
+          {/* Warning Count Badge */}
+          {user.warningcount > 0 && (
+            <div className="absolute top-4 right-4 bg-red-600 text-white text-lg font-bold px-4 py-2 rounded-full shadow-lg">
+              Warning: {user.warningcount}
+            </div>
+          )}
           <div className="join mb-4 w-full lg:w-auto flex justify-center my-3">
             <button className='btn join-item bg-gray-600 text-gray-300'>
               Posts and Threads
