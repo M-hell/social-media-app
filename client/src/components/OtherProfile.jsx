@@ -108,17 +108,20 @@ function OtherProfile() {
       {user ? (
         <div>
           <OtherProfileCard user={user} />
-          {/* Warning Count Badge */}
-          {user.warningcount > 0 && (
+          
+          {/* Always show the warning count, default to 0 if not present */}
+          {user && (
             <div className="absolute top-4 right-4 bg-red-600 text-white text-lg font-bold px-4 py-2 rounded-full shadow-lg">
-              Warning: {user.warningcount}
+              Warning: {user.warningcount || 0}
             </div>
           )}
+
           <div className="join mb-4 w-full lg:w-auto flex justify-center my-3">
             <button className='btn join-item bg-gray-600 text-gray-300'>
               Posts and Threads
             </button>
           </div>
+          
           <div className="flex flex-col items-center mt-4">
             {visiblePosts.length === 0 ? (
               <p className="text-gray-400 text-lg mt-4">This user has no posts or threads.</p>
