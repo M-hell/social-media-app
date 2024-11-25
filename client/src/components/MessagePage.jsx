@@ -11,8 +11,6 @@ import { IoClose } from "react-icons/io5";
 import Loading from './Loading';
 import { IoMdSend } from "react-icons/io";
 import moment from 'moment';
-import nsfwjs from 'nsfwjs'; // Import nsfwjs for content moderation
-import toast from 'react-hot-toast'; // Import react-hot-toast
 
 const MessagePage = () => {
   const params = useParams();
@@ -45,41 +43,10 @@ const MessagePage = () => {
     setOpenImageVideoUpload(prev => !prev);
   };
 
-  const checkImageForNSFW = async (imageFile) => {
-    // Initialize NSFWJS model
-    const model = await nsfwjs.load();
-
-    // Create an image element and load the file
-    const image = new Image();
-    image.src = URL.createObjectURL(imageFile);
-    await new Promise((resolve) => { image.onload = resolve; }); // Wait for image to load
-
-    // Get predictions from the model
-    const predictions = await model.classify(image);
-
-    // Extract pornographic and hentai probabilities
-    const pornProbability = predictions.find(p => p.className === 'Porn')?.probability || 0;
-    const hentaiProbability = predictions.find(p => p.className === 'Hentai')?.probability || 0;
-
-    return { pornProbability, hentaiProbability };
-  };
-
   const handleUploadImage = async (e) => {
     const file = e.target.files[0];
 
     setLoading(true);
-
-    // Check for NSFW content (porn and hentai)
-    const { pornProbability, hentaiProbability } = await checkImageForNSFW(file);
-
-    // If either of the probabilities is greater than 0.5, show a warning and prevent upload
-    if (pornProbability > 0.5 || hentaiProbability > 0.5) {
-      toast.error('Image contains vulgar content. Please upload a different image.');
-      setLoading(false);
-      return; // Prevent further action if NSFW content is detected
-    }
-
-    // Proceed with uploading the file if it's safe
     const uploadPhoto = await uploadFile(file);
     setLoading(false);
     setOpenImageVideoUpload(false);
@@ -191,6 +158,7 @@ const MessagePage = () => {
         </div>
       </header>
 
+      {/***show all message */}
       <section className='h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll scrollbar bg-gray-800'>
         <div className='flex flex-col gap-2 py-2 mx-2' ref={currentMessage}>
           {
@@ -225,60 +193,95 @@ const MessagePage = () => {
           }
         </div>
 
-        {message.imageUrl && (
-          <div className='w-full h-full sticky bottom-0 bg-gray-900 bg-opacity-80 flex justify-center items-center rounded overflow-hidden'>
-            <div className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600' onClick={handleClearUploadImage}>
-              <IoClose size={30} />
+        {/**upload Image display */}
+        {
+          message.imageUrl && (
+            <div className='w-full h-full sticky bottom-0 bg-gray-900 bg-opacity-80 flex justify-center items-center rounded overflow-hidden'>
+              <div className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600' onClick={handleClearUploadImage}>
+                <IoClose size={30} />
+              </div>
+              <div className='bg-gray-800 p-3'>
+                <img
+                  src={message.imageUrl}
+                  alt='uploadImage'
+                  className='aspect-square w-full h-full max-w-sm m-2 object-scale-down rounded'
+                />
+              </div>
             </div>
-            <div className='bg-gray-800 p-3'>
-              <img
-                src={message.imageUrl}
-                alt='uploadImage'
-                className='aspect-square w-full h-full max-w-sm m-2 object-scale-down rounded'
-              />
+          )
+        }
+        {/**upload video display */}
+        {
+          message.videoUrl && (
+            <div className='w-full h-full sticky bottom-0 bg-gray-900 bg-opacity-80 flex justify-center items-center rounded overflow-hidden'>
+              <div className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600' onClick={handleClearUploadVideo}>
+                <IoClose size={30} />
+              </div>
+              <div className='bg-gray-800 p-3'>
+                <video
+                  src={message.videoUrl}
+                  className='aspect-square w-full h-full max-w-sm m-2 object-scale-down rounded'
+                  controls
+                  muted
+                  autoPlay
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )
+        }
 
-        {message.videoUrl && (
-          <div className='w-full h-full sticky bottom-0 bg-gray-900 bg-opacity-80 flex justify-center items-center rounded overflow-hidden'>
-            <div className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600' onClick={handleClearUploadVideo}>
-              <IoClose size={30} />
+        {
+          loading && (
+            <div className='w-full h-full flex sticky bottom-0 justify-center items-center'>
+              <Loading />
             </div>
-            <div className='bg-gray-800 p-3'>
-              <video
-                src={message.videoUrl}
-                controls
-                className='aspect-square w-full h-full max-w-sm m-2 object-scale-down rounded'
-              />
-            </div>
-          </div>
-        )}
+          )
+        }
       </section>
 
-      <section className={`relative bottom-0 w-full bg-gray-900 py-3 flex items-center gap-3 px-4 ${openImageVideoUpload ? "border-t-[1px] border-gray-700" : ""}`}>
-        <div className="flex items-center gap-3 relative">
-          <button onClick={handleUploadImageVideoOpen} className='bg-teal-700 rounded-full hover:bg-teal-600'>
+      {/**send message */}
+      <section className='h-16 bg-gray-800 flex items-center px-4'>
+        <div className='relative'>
+          <button onClick={handleUploadImageVideoOpen} className='flex justify-center items-center w-11 h-11 rounded-full hover:bg-teal-500 text-white'>
             <FaPlus size={20} />
           </button>
-          <input
-            type="file"
-            accept="image/*, video/*"
-            onChange={handleUploadImageVideoOpen ? (message.imageUrl ? handleUploadVideo : handleUploadImage) : () => {}}
-            className="absolute w-0 h-0 opacity-0"
-          />
+          {/**video and image */}
+          {
+            openImageVideoUpload && (
+              <div className='bg-gray-700 shadow rounded absolute bottom-14 w-36 p-2'>
+                <form>
+                  <label htmlFor='uploadImage' className='flex items-center p-2 px-3 gap-3 hover:bg-gray-600 cursor-pointer'>
+                    <div className='text-teal-400'>
+                      <FaImage size={18} />
+                    </div>
+                    <p className='text-white'>Image</p>
+                  </label>
+                  <label htmlFor='uploadVideo' className='flex items-center p-2 px-3 gap-3 hover:bg-gray-600 cursor-pointer'>
+                    <div className='text-teal-400'>
+                      <FaVideo size={18} />
+                    </div>
+                    <p className='text-white'>Video</p>
+                  </label>
+                  <input type="file" id="uploadImage" className='hidden' onChange={handleUploadImage} />
+                  <input type="file" id="uploadVideo" className='hidden' onChange={handleUploadVideo} />
+                </form>
+              </div>
+            )
+          }
         </div>
-        <textarea
-          name="text"
-          value={message.text}
-          onChange={handleOnChange}
-          placeholder="Type a message..."
-          rows={1}
-          className='w-full bg-gray-700 p-3 rounded text-white outline-none'
-        />
-        <button onClick={handleSendMessage} className='ml-3 text-white'>
-          <IoMdSend size={30} />
-        </button>
+        <form className='w-full flex items-center' onSubmit={handleSendMessage}>
+          <input
+            name="text"
+            type="text"
+            placeholder='Enter your message'
+            className='ml-4 w-full text-sm placeholder-gray-400 focus:outline-none p-3 rounded bg-gray-700 text-white focus:border-teal-500'
+            onChange={handleOnChange}
+            value={message.text}
+          />
+          <button type="submit" className='flex justify-center items-center w-12 h-12 ml-4 rounded-full hover:bg-teal-500 text-white'>
+            <IoMdSend size={25} />
+          </button>
+        </form>
       </section>
     </div>
   );
