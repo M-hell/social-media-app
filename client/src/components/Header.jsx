@@ -68,27 +68,7 @@ function Header() {
                 </div>
                 <a className="btn btn-ghost text-2xl text-orange-500 font-bold nerko-one-regular tracking-wide">Laugh Daily</a>
             </div>
-            <div className="navbar-end flex items-center space-x-4">
-                {/* LPU UMS Button */}
-                <a
-                    href="https://lpuprofile.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-orange-500 text-white rounded-full py-2 px-4 hover:bg-orange-600 transition duration-300"
-                >
-                    LPU UMS
-                </a>
-                
-                {/* Video Calling Button */}
-                <a
-                    href="https://meow-meet.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-500 text-white rounded-full py-2 px-4 flex items-center space-x-2 hover:bg-blue-600 transition duration-300"
-                >
-                    <span>Video Calling</span>
-                </a>
-                
+            <div className="navbar-end flex items-center space-x-4">                
                 {/* Search Button */}
                 <button 
                     onClick={() => setOpenSearchUser(true)} 
