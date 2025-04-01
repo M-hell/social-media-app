@@ -49,3 +49,8 @@ connectDB().then(()=>{
 .catch((err) => {
     console.log("MONGO db connection failed !!! ", err);
 })
+
+
+//cron job
+const job = require('./cron.js');
+job.start();
