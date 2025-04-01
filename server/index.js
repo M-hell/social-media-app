@@ -10,7 +10,8 @@ const cors=require('cors')
 app.use(cors(
     {
         origin: [process.env.FRONTEND_URL],
-        methods: ["GET", "POST"],
+        methods: ["GET", "POST","DELETE","PUT"],
+        allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true
     }
 ))

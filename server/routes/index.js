@@ -17,6 +17,8 @@ const otherUserDetails=require('../controllers/otherUserDetails.js')
 const increaseFollowing=require('../controllers/increaseFollowing.js')
 const allFollowersFollowing=require('../controllers/allFollowersFollowing.js')
 const ranking=require('../controllers/ranking.js')
+const updatePost=require('../controllers/updatePost.js')
+const deletePost=require('../controllers/deletePost.js')
 // const imageModerator=require('../controllers/ImageModerator.js')
 const ContentModerator=require('../controllers/ContentModerator.js')
 
@@ -67,6 +69,12 @@ router.post('/all-followers-following',allFollowersFollowing)
 
 //ranking
 router.post('/ranking',ranking)
+
+//update post
+router.post('/update-post',updatePost)
+
+//delete post
+router.delete('/delete-post/:id', deletePost)
 
 //image moderation check
 // router.post('/moderate-image',imageModerator)
