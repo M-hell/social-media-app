@@ -39,18 +39,20 @@ app.get("*", (req, res) => {
 });
 
 
-//db connection
-const connectDB=require('./db/connectDb')
-connectDB().then(()=>{
-    server.listen(PORT,()=>{
-        console.log(`app running on http://localhost:${PORT}/`);
+//for db connection
+const connectDB = require('./db/connectDb.js');
+connectDB()
+    .then(() => {
+        server.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}/`);
+            
+            // Start cron job only after DB & server are ready
+            const job = require('./cron.js');
+            job.start();
+            console.log("Cron job started (keeps server awake).");
+        });
     })
-})
-.catch((err) => {
-    console.log("MONGO db connection failed !!! ", err);
-})
-
-
-//cron job
-const job = require('./cron.js');
-job.start();
+    .catch((err) => {
+        console.error("MongoDB connection failed:", err);
+        process.exit(1); // Exit if DB fails
+    });
