@@ -47,8 +47,8 @@ connectDB()
             console.log(`Server running on http://localhost:${PORT}/`);
             
             // Start cron job only after DB & server are ready
-            const job = require('./cron.js');
-            job.start();
+            // const job = require('./cron.js');
+            // job.start();
             console.log("Cron job started (keeps server awake).");
         });
     })
