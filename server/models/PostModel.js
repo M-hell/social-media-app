@@ -7,14 +7,14 @@ const PostSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-    upvotescount: {
-        type: Number,
-        default: 0
-    },
-    downvotescount: {
-        type: Number,
-        default: 0
-    },
+    upvotescount: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    downvotescount: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

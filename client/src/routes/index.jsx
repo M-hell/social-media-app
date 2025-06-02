@@ -5,7 +5,6 @@ import CheckEmailPage from "../pages/CheckEmailPage";
 import CheckPasswordPage from "../pages/CheckPasswordPage";
 import Home from "../pages/Home";
 import AllPosts from "../components/AllPosts";
-import UserProfile from "../components/UserProfile";
 import OtherProfile from "../components/OtherProfile";
 import Ranking from "../components/Ranking";
 import AddPost from "../components/AddPost";
@@ -30,10 +29,6 @@ const router = createBrowserRouter([
       {
         path: "password",
         element: <CheckPasswordPage />,
-      },
-      {
-        path: "user-profile",
-        element: <UserProfile />
       },
       {
         path: "rankings",

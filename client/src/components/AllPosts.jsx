@@ -2,44 +2,81 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { BiUpvote, BiDownvote } from "react-icons/bi";
+import { BiUpvote, BiDownvote, BiSolidUpvote, BiSolidDownvote } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
 import Comments from './Comments';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function AllPosts() {
   const [posts, setPosts] = useState([]);
   const [expandedPosts, setExpandedPosts] = useState({});
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
-
+  const [loading, setLoading] = useState(true);
+  const  currentUserId  = useSelector((state) => state.user._id);
+  console.log("Current User ID:", currentUserId);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true);
         const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/all-posts`;
         const response = await axios.get(URL, { withCredentials: true });
         setPosts(response.data.data);
       } catch (error) {
         toast.error(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPosts();
   }, [openCommentsPostId]);
 
+  const hasUpvoted = (post) => {
+    return post.upvotescount.some(userId => userId.toString() === currentUserId.toString());
+  };
+
+  const hasDownvoted = (post) => {
+    return post.downvotescount.some(userId => userId.toString() === currentUserId.toString());
+  };
+
   const handleUpvote = async (postId) => {
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/upvote`;
       await axios.post(URL, { postId }, { withCredentials: true });
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? { ...post, upvotescount: post.upvotescount + 1 }
-            : post
-        )
+      
+      setPosts(prevPosts =>
+        prevPosts.map(post => {
+          if (post._id !== postId) return post;
+          
+          // If already upvoted, remove the vote
+          if (hasUpvoted(post)) {
+            return {
+              ...post,
+              upvotescount: post.upvotescount.filter(id => id.toString() !== currentUserId.toString())
+            };
+          }
+          
+          // If downvoted, switch to upvote
+          if (hasDownvoted(post)) {
+            return {
+              ...post,
+              upvotescount: [...post.upvotescount, currentUserId],
+              downvotescount: post.downvotescount.filter(id => id.toString() !== currentUserId.toString())
+            };
+          }
+          
+          // Add new upvote
+          return {
+            ...post,
+            upvotescount: [...post.upvotescount, currentUserId]
+          };
+        })
       );
-      toast.success('Upvote successful');
+      
+      toast.success('Upvote updated');
     } catch (error) {
       toast.error(error.message);
     }
@@ -49,14 +86,37 @@ function AllPosts() {
     try {
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/downvote`;
       await axios.post(URL, { postId }, { withCredentials: true });
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? { ...post, downvotescount: post.downvotescount + 1 }
-            : post
-        )
+      
+      setPosts(prevPosts =>
+        prevPosts.map(post => {
+          if (post._id !== postId) return post;
+          
+          // If already downvoted, remove the vote
+          if (hasDownvoted(post)) {
+            return {
+              ...post,
+              downvotescount: post.downvotescount.filter(id => id.toString() !== currentUserId.toString())
+            };
+          }
+          
+          // If upvoted, switch to downvote
+          if (hasUpvoted(post)) {
+            return {
+              ...post,
+              downvotescount: [...post.downvotescount, currentUserId],
+              upvotescount: post.upvotescount.filter(id => id.toString() !== currentUserId.toString())
+            };
+          }
+          
+          // Add new downvote
+          return {
+            ...post,
+            downvotescount: [...post.downvotescount, currentUserId]
+          };
+        })
       );
-      toast.success('Downvote successful');
+      
+      toast.success('Downvote updated');
     } catch (error) {
       toast.error(error.message);
     }
@@ -72,6 +132,10 @@ function AllPosts() {
   const toggleComments = (postId) => {
     setOpenCommentsPostId((prevPostId) => (prevPostId === postId ? null : postId));
   };
+
+  if (loading) {
+    return <div className="p-4 bg-gray-900 text-gray-200">Loading posts...</div>;
+  }
 
   return (
     <div className="p-4 bg-gray-900 text-gray-200 overflow-y-auto max-h-screen">
@@ -89,7 +153,7 @@ function AllPosts() {
       ) : (
         <div className="flex flex-col gap-4">
           {posts
-            .filter((post) => post.postimg) // Filter out posts without images
+            .filter((post) => post.postimg)
             .map((post) => {
               const maxLength = 150;
               const shouldTruncate = post.description.length > maxLength;
@@ -98,6 +162,8 @@ function AllPosts() {
                 : post.description;
               const isExpanded = expandedPosts[post._id] || false;
               const isCommentsOpen = openCommentsPostId === post._id;
+              const userUpvoted = hasUpvoted(post);
+              const userDownvoted = hasDownvoted(post);
 
               return (
                 <div
@@ -110,13 +176,13 @@ function AllPosts() {
                   >
                     <img
                       src={
-                        post.author.profile_pic ||
+                        post.author?.profile_pic ||
                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVHR62PqqslJrmbNHhwiH3Cmb99-h10mi6g&s'
                       }
-                      alt={post.author.name}
+                      alt={post.author?.name || 'User'}
                       className="w-12 h-12 rounded-full object-cover mr-3"
                     />
-                    <span className="text-lg font-semibold">{post.author.name}</span>
+                    <span className="text-lg font-semibold">{post.author?.name || 'Unknown User'}</span>
                   </div>
 
                   {post.postimg && (
@@ -143,26 +209,27 @@ function AllPosts() {
                   )}
 
                   <div className="flex justify-between mb-2 text-sm sm:text-base">
-                    <span className="text-gray-400">Upvotes: {post.upvotescount}</span>
-                    <span className="text-gray-400">Downvotes: {post.downvotescount}</span>
+                    <span className="text-gray-400">Upvotes: {post.upvotescount?.length || 0}</span>
+                    <span className="text-gray-400">Downvotes: {post.downvotescount?.length || 0}</span>
                   </div>
                   <div className="text-gray-400 mb-4 text-sm sm:text-base">
-                    <span>Comments: {post.comments.length}</span>
+                    <span>Comments: {post.comments?.length || 0}</span>
                   </div>
 
-                  {/* Responsive Buttons */}
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-4 mt-auto">
                     <button
                       onClick={() => handleUpvote(post._id)}
-                      className="bg-green-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-green-600 transition-colors duration-300 w-full sm:w-auto"
+                      className={`${userUpvoted ? 'bg-green-700' : 'bg-green-500'} text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-green-600 transition-colors duration-300 w-full sm:w-auto`}
                     >
-                      <BiUpvote className="mr-2" /> Upvote
+                      {userUpvoted ? <BiSolidUpvote className="mr-2" /> : <BiUpvote className="mr-2" />}
+                      {userUpvoted ? 'Upvoted' : 'Upvote'}
                     </button>
                     <button
                       onClick={() => handleDownvote(post._id)}
-                      className="bg-red-500 text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-red-600 transition-colors duration-300 w-full sm:w-auto"
+                      className={`${userDownvoted ? 'bg-red-700' : 'bg-red-500'} text-white py-1 px-3 flex justify-center items-center rounded-md hover:bg-red-600 transition-colors duration-300 w-full sm:w-auto`}
                     >
-                      <BiDownvote className="mr-2" /> Downvote
+                      {userDownvoted ? <BiSolidDownvote className="mr-2" /> : <BiDownvote className="mr-2" />}
+                      {userDownvoted ? 'Downvoted' : 'Downvote'}
                     </button>
                     <button
                       onClick={() => toggleComments(post._id)}
