@@ -1,4 +1,4 @@
-const UserModel = require('../models/userModel');
+const UserModel = require('../models/UserModel');
 const MeetingModel = require('../models/MeetingModel');
 const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
 
