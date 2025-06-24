@@ -21,6 +21,9 @@ const updatePost=require('../controllers/updatePost.js')
 const deletePost=require('../controllers/deletePost.js')
 // const imageModerator=require('../controllers/ImageModerator.js')
 const ContentModerator=require('../controllers/ContentModerator.js')
+const createACall=require('../controllers/createACall.js')
+const allMeetings=require('../controllers/allMeetings.js')
+const endMeeting=require('../controllers/endMeeting.js')
 
 //user registering
 router.post('/register',registerUser)
@@ -81,6 +84,17 @@ router.delete('/delete-post/:id', deletePost)
 
 //content moderation check
 router.post('/moderate-content',ContentModerator)
+
+//create a call
+router.post('/create-call', createACall)
+
+//get all meetings
+router.get('/all-meetings', allMeetings)
+
+//end a meeting
+router.post('/end-meeting', endMeeting)
+
+
 
 
 
