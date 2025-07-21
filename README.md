@@ -1,4 +1,4 @@
-# LPU Social Media App
+## Social Media App
 
 DEPLOY LINK = [https://social-media-app-rfuc.onrender.com/]
 
