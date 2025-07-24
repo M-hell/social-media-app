@@ -24,6 +24,10 @@ const ContentModerator=require('../controllers/ContentModerator.js')
 const createACall=require('../controllers/createACall.js')
 const allMeetings=require('../controllers/allMeetings.js')
 const endMeeting=require('../controllers/endMeeting.js')
+const createCommunity = require('../controllers/createCommunity.js');
+const deleteCommunity = require('../controllers/deleteCommunity.js');
+const manageCommunityParticipants = require('../controllers/AddorRemoveParticipant.js');
+const getUserCommunities = require('../controllers/getUserCommunities.js');
 
 //user registering
 router.post('/register',registerUser)
@@ -93,6 +97,18 @@ router.get('/all-meetings', allMeetings)
 
 //end a meeting
 router.post('/end-meeting', endMeeting)
+
+// Create a community
+router.post('/create-community', createCommunity);
+
+// Delete a community
+router.delete('/delete-community/:communityId', deleteCommunity);
+
+// Manage community participants (add/remove)
+router.post('/manage-community-participants', manageCommunityParticipants);
+
+// Get user communities
+router.get('/get-user-communities', getUserCommunities);
 
 
 

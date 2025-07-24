@@ -49,7 +49,7 @@ connectDB()
             // Start cron job only after DB & server are ready
             // const job = require('./cron.js');
             // job.start();
-            console.log("Cron job started (keeps server awake).");
+            // console.log("Cron job started (keeps server awake).");
         });
     })
     .catch((err) => {

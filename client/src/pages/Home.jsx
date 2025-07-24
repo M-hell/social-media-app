@@ -8,7 +8,7 @@ import UserSidebar from '../components/UserSidebar';
 import { Outlet } from 'react-router-dom';
 import io from 'socket.io-client';
 import { motion } from 'framer-motion';
-import { HiOutlineHashtag, HiOutlineDocumentText } from 'react-icons/hi';
+import { HiOutlineHashtag, HiOutlineDocumentText, HiOutlineUsers } from 'react-icons/hi';
 
 const gradientBg =
   'bg-gradient-to-br from-[#181325] via-[#221c41]/80 to-[#232949]/90';
@@ -90,6 +90,7 @@ const Home = () => {
 
   const isPostsActive = location.pathname === '/all-posts';
   const isThreadsActive = location.pathname === '/all-threads';
+  const isCommunityActive = location.pathname === '/community';
 
   return (
     <div
@@ -128,6 +129,8 @@ const Home = () => {
             role="tablist"
             aria-label="Post/Threads navigation"
           >
+
+            {/* Post Button */}
             <button
               className={`
                 group relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
@@ -152,6 +155,8 @@ const Home = () => {
                 />
               )}
             </button>
+
+            {/* Threads Button */}
             <button
               className={`
                 group relative flex items-center gap-2 px-6 py-2.5 rounded-xl
@@ -176,6 +181,34 @@ const Home = () => {
                 />
               )}
             </button>
+
+              {/* community button*/}
+              <button
+              className={`
+                group relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                transition-all duration-200 border-none outline-none 
+                font-semibold text-lg
+                ${
+                  isCommunityActive
+                    ? "bg-gradient-to-r from-orange-500 via-fuchsia-600 to-indigo-600 shadow-lg text-white"
+                    : "bg-black/30 text-white/60 hover:bg-black/60 hover:text-white/90"
+                }
+                focus:ring-2 focus:ring-primary/60
+              `}
+              aria-current={isCommunityActive ? "page" : undefined}
+              onClick={() => navigate("/community")}
+            >
+              <HiOutlineUsers className="text-2xl" aria-hidden />
+              Community
+              {isCommunityActive && (
+                <motion.span
+                  className="absolute inset-x-1.5 -bottom-1.5 h-1 rounded-xl bg-gradient-to-r from-orange-400/70 via-orange-500/90 to-pink-500/60 blur-[1.5px] opacity-60"
+                  layoutId="tab-active-indicator"
+                />
+              )}
+            </button>
+
+
           </motion.div>
 
           {/* Content Outlet */}

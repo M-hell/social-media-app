@@ -41,12 +41,16 @@ const userSchema =  new mongoose.Schema({
     warningcount: {
         type: Number,
         default: 0
-    }
+    },
+    communities: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Community'
+    }]
 },{
     timestamps : true
 })
 
-const UserModel = mongoose.models.User || mongoose.model('User', userSchema);
+const UserModel = mongoose.model('User', userSchema);
 
 
 module.exports = UserModel
