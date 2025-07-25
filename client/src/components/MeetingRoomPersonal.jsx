@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 function MeetingRoomPersonal() {
@@ -9,11 +9,29 @@ function MeetingRoomPersonal() {
   const userId = useSelector((state) => state?.user?._id);
   const name = useSelector((state) => state?.user?.name);
   const containerRef = useRef(null);
+  const navigate = useNavigate();
+  const zcInstanceRef = useRef(null);
 
   const setupMeeting = async () => {
     if (containerRef.current && userId && name && roomId) {
-      const appID = 490540697;
-      const serverSecret = '7f48666ec7aae92c009c6a8c7681b446';
+      // Clear any existing instance first to prevent blank screen
+      if (zcInstanceRef.current) {
+        try {
+          zcInstanceRef.current.destroy();
+        } catch (error) {
+          console.log('Previous instance cleanup:', error);
+        }
+        zcInstanceRef.current = null;
+      }
+
+      // Clear the container
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
+
+      const appID = parseInt(import.meta.env.VITE_REACT_APP_ZEGO_APPID);
+      const serverSecret = import.meta.env.VITE_REACT_APP_ZEGO_SECRET;
+      console.log('App ID:', appID, 'Server Secret:', serverSecret, 'Room ID:', roomId, 'User ID:', userId, 'Name:', name);
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
         serverSecret,
@@ -23,6 +41,7 @@ function MeetingRoomPersonal() {
       );
 
       const zc = ZegoUIKitPrebuilt.create(kitToken);
+      zcInstanceRef.current = zc;
 
       zc.joinRoom({
         container: containerRef.current,
@@ -52,12 +71,27 @@ function MeetingRoomPersonal() {
         showLayoutButton: true,
         // Dark mode glassmorphism overlay
         theme: 'dark',
+        onLeaveRoom: () => {
+          navigate('/');
+        },
       });
     }
   };
 
   useEffect(() => {
     setupMeeting();
+    
+    // Cleanup function to prevent memory leaks
+    return () => {
+      if (zcInstanceRef.current) {
+        try {
+          zcInstanceRef.current.destroy();
+        } catch (error) {
+          console.log('Cleanup error:', error);
+        }
+        zcInstanceRef.current = null;
+      }
+    };
     // eslint-disable-next-line
   }, [roomId, userId, name]);
 

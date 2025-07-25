@@ -7,8 +7,8 @@ import Header from '../components/Header';
 import UserSidebar from '../components/UserSidebar';
 import { Outlet } from 'react-router-dom';
 import io from 'socket.io-client';
-import { motion } from 'framer-motion';
-import { HiOutlineHashtag, HiOutlineDocumentText, HiOutlineUsers } from 'react-icons/hi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HiOutlineHashtag, HiOutlineDocumentText, HiOutlineUsers, HiMenu, HiX } from 'react-icons/hi';
 
 const gradientBg =
   'bg-gradient-to-br from-[#181325] via-[#221c41]/80 to-[#232949]/90';
@@ -22,6 +22,7 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const fetchUserDetails = async () => {
     try {
@@ -88,9 +89,36 @@ const Home = () => {
     // eslint-disable-next-line
   }, []);
 
+  // Close sidebar when route changes on mobile
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSidebarOpen && window.innerWidth < 1024) {
+        const sidebar = document.getElementById('mobile-sidebar');
+        const hamburger = document.getElementById('hamburger-button');
+        
+        if (sidebar && !sidebar.contains(event.target) && 
+            hamburger && !hamburger.contains(event.target)) {
+          setIsSidebarOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSidebarOpen]);
+
   const isPostsActive = location.pathname === '/all-posts';
   const isThreadsActive = location.pathname === '/all-threads';
   const isCommunityActive = location.pathname === '/community';
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div
@@ -105,9 +133,9 @@ const Home = () => {
     >
       {/* Header */}
       <Header />
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:flex-row w-full max-w-screen-2xl mx-auto px-0 sm:px-3 relative z-10 mt-2">
+        
         {/* Sidebar */}
         <motion.div
           className={`w-full lg:w-1/5 min-w-[220px] ${glassBg} pb-3 lg:pb-0 lg:rounded-tr-3xl rounded-none rounded-b-2xl lg:rounded-bl-2xl border-r border-white/5 shadow-xl select-none`}
@@ -119,23 +147,28 @@ const Home = () => {
         </motion.div>
 
         {/* Content Section */}
-        <div className="w-full lg:w-4/5 flex flex-col items-center overflow-auto p-4 md:p-8 xl:p-12 transition-all">
+        <div className={`
+          w-full lg:w-4/5 flex flex-col items-center overflow-auto 
+          p-4 md:p-8 xl:p-12 transition-all
+          ${isSidebarOpen ? 'lg:ml-0' : ''}
+          pt-16 lg:pt-4
+        `}>
+          
           {/* Tab buttons */}
           <motion.div
-            className="mb-6 w-full max-w-lg mx-auto flex justify-center gap-4"
+            className="mb-6 w-full max-w-lg mx-auto flex justify-center gap-2 sm:gap-4 flex-wrap"
             initial={{ y: 15, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
             role="tablist"
             aria-label="Post/Threads navigation"
           >
-
             {/* Post Button */}
             <button
               className={`
-                group relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                group relative flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl 
                 transition-all duration-200 border-none outline-none 
-                font-semibold text-lg
+                font-semibold text-sm sm:text-lg flex-1 sm:flex-none min-w-0
                 ${
                   isPostsActive
                     ? "bg-gradient-to-r from-orange-500 via-fuchsia-600 to-indigo-600 shadow-lg text-white"
@@ -146,8 +179,8 @@ const Home = () => {
               aria-current={isPostsActive ? "page" : undefined}
               onClick={() => navigate("/all-posts")}
             >
-              <HiOutlineDocumentText className="text-2xl" aria-hidden />
-              Posts
+              <HiOutlineDocumentText className="text-lg sm:text-2xl flex-shrink-0" aria-hidden />
+              <span className="truncate">Posts</span>
               {isPostsActive && (
                 <motion.span
                   className="absolute inset-x-1.5 -bottom-1.5 h-1 rounded-xl bg-gradient-to-r from-orange-400/70 via-orange-500/90 to-pink-500/60 blur-[1.5px] opacity-60"
@@ -159,9 +192,9 @@ const Home = () => {
             {/* Threads Button */}
             <button
               className={`
-                group relative flex items-center gap-2 px-6 py-2.5 rounded-xl
+                group relative flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl
                 transition-all duration-200 border-none outline-none 
-                font-semibold text-lg
+                font-semibold text-sm sm:text-lg flex-1 sm:flex-none min-w-0
                 ${
                   isThreadsActive
                     ? "bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 shadow-lg text-white"
@@ -172,8 +205,8 @@ const Home = () => {
               aria-current={isThreadsActive ? "page" : undefined}
               onClick={() => navigate("/all-threads")}
             >
-              <HiOutlineHashtag className="text-2xl" aria-hidden />
-              Threads
+              <HiOutlineHashtag className="text-lg sm:text-2xl flex-shrink-0" aria-hidden />
+              <span className="truncate">Threads</span>
               {isThreadsActive && (
                 <motion.span
                   className="absolute inset-x-1.5 -bottom-1.5 h-1 rounded-xl bg-gradient-to-r from-purple-500/70 via-indigo-400/80 to-sky-400/70 blur-[1.5px] opacity-60"
@@ -182,12 +215,12 @@ const Home = () => {
               )}
             </button>
 
-              {/* community button*/}
-              <button
+            {/* Community Button */}
+            <button
               className={`
-                group relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                group relative flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl 
                 transition-all duration-200 border-none outline-none 
-                font-semibold text-lg
+                font-semibold text-sm sm:text-lg flex-1 sm:flex-none min-w-0
                 ${
                   isCommunityActive
                     ? "bg-gradient-to-r from-orange-500 via-fuchsia-600 to-indigo-600 shadow-lg text-white"
@@ -198,8 +231,8 @@ const Home = () => {
               aria-current={isCommunityActive ? "page" : undefined}
               onClick={() => navigate("/community")}
             >
-              <HiOutlineUsers className="text-2xl" aria-hidden />
-              Community
+              <HiOutlineUsers className="text-lg sm:text-2xl flex-shrink-0" aria-hidden />
+              <span className="truncate">Community</span>
               {isCommunityActive && (
                 <motion.span
                   className="absolute inset-x-1.5 -bottom-1.5 h-1 rounded-xl bg-gradient-to-r from-orange-400/70 via-orange-500/90 to-pink-500/60 blur-[1.5px] opacity-60"
@@ -207,8 +240,6 @@ const Home = () => {
                 />
               )}
             </button>
-
-
           </motion.div>
 
           {/* Content Outlet */}
@@ -217,11 +248,13 @@ const Home = () => {
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
+            id="main-content"
           >
             <Outlet />
           </motion.div>
         </div>
       </div>
+      
       {/* Accessibility: skip main */}
       <a href="#main-content" className="sr-only focus:not-sr-only absolute top-3 left-3 z-40 bg-black/70 text-white/90 px-4 py-2 rounded transition-all">Skip to main content</a>
     </div>

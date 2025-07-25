@@ -94,6 +94,24 @@ function Header() {
       setEndingMeetingId(null);
     }
   };
+  const handleEndgroupMeeting = async (meeting) => {
+    if (!meeting.groupCall) return;
+
+    setEndingMeetingId(meeting._id);
+    try {
+      const url = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/end-group-meeting`;
+      await axios.post(
+        url,
+        { meetingId: meeting._id },
+        { withCredentials: true }
+      );
+      setMeetings(prev => prev.filter(m => m._id !== meeting._id));
+    } catch (err) {
+      console.error("Failed to end group meeting", err);
+    } finally {
+      setEndingMeetingId(null);
+    }
+  };
 
   return (
     <header
@@ -298,6 +316,32 @@ function Header() {
                           {endingMeetingId === meeting._id ? "Ending..." : "End Meeting"}
                         </motion.button>
                       )}
+                      {isGroup && (
+                        //ending meeting button
+                        <motion.button
+                          layout
+                          disabled={endingMeetingId === meeting._id}
+                          onClick={() => handleEndgroupMeeting(meeting)}
+                          className="mt-2 w-full bg-gradient-to-r from-red-600 to-pink-700 hover:from-red-700 hover:to-pink-800 text-white rounded-lg px-3 py-1.5 text-xs font-semibold shadow transition-all active:scale-95"
+                          whileHover={{ scale: 1.04 }}
+                          whileTap={{ scale: 0.97 }}
+                        >
+                          {endingMeetingId === meeting._id ? "Ending..." : "End Meeting"}
+                        </motion.button>
+                      )}
+                      <motion.button
+                        layout
+                        onClick={() => {
+                          navigate(`/meetingroom/${meeting.roomId}`);
+                          setShowMeetings(false);
+                        }}
+                        className="mt-2 w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg px-3 py-1.5 text-xs font-semibold shadow transition-all active:scale-95"
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        Join Meeting
+                      </motion.button>
+
                     </li>
                   );
                 })}

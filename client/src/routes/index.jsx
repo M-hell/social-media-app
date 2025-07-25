@@ -13,6 +13,7 @@ import AllThreads from "../components/AllThreads";
 import MessagePage from "../components/MessagePage";
 import MeetingRoomPersonal from "../components/MeetingRoomPersonal";
 import Community from "../components/Community";
+import CommunityMessage from "../components/CommunityMessage";
 
 
 const router = createBrowserRouter([
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
         element: <AddThread />
       },
       {
+        path: "meetingroom/:roomId",
+        element: <MeetingRoomPersonal />
+      },
+      {
         path: "",
         element: <Home />,
         children: [
@@ -65,12 +70,12 @@ const router = createBrowserRouter([
             element: <MessagePage />
           },
           {
-            path: "1o1meetingroom/:roomId",
-            element: <MeetingRoomPersonal />
-          },
-          {
             path: "community",
             element: <Community />
+          },
+          {
+            path: "community/:communityId",
+            element: <CommunityMessage />
           }
         ]
       }

@@ -5,6 +5,8 @@ const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken.js')
 const UserModel = require('../models/UserModel.js');
 const { ConversationModel, MessageModel } = require('../models/ConversationModel.js');
 const getConversation = require('../helpers/getConversation.js');
+const CommunityMessageModel = require('../models/CommunityMessage.js');
+const CommunityModel = require('../models/CommunityModel.js'); // Assuming you have a CommunityModel
 
 const app = express();
 
@@ -145,11 +147,131 @@ io.on('connection', async (socket) => {
     });
 
     socket.on('disconnect', () => {
-        if (user?._id) {
-            onlineUser.delete(user._id.toString());
-        }
-        console.log('User disconnected: ', socket.id);
+    if (user?._id) {
+        onlineUser.delete(user._id.toString());
+        
+        // Leave all community rooms (optional, Socket.IO handles this automatically)
+        // But you might want to emit a user-left event to communities
+    }
+    console.log('User disconnected: ', socket.id);
+    io.emit('onlineUser', Array.from(onlineUser));
     });
+
+    socket.on('message-page-community', async (communityId) => {
+    console.log('Community ID for message page:', communityId);
+    
+    try {
+        // Fetch community details
+        const communityInfo = await CommunityModel.findById(communityId)
+            .populate('createdBy', '-password')
+            .populate('participants', '-password');
+
+        if (!communityInfo) {
+            console.error("Community not found");
+            return;
+        }
+
+        // Check if user is a participant or creator
+        const isParticipant = communityInfo.participants.some(p => p._id.toString() === userIdString) ||
+                             communityInfo.createdBy._id.toString() === userIdString;
+
+        if (!isParticipant) {
+            console.error("User not authorized to view this community");
+            return;
+        }
+
+        // Join the community room
+        socket.join(`community_${communityId}`);
+
+        // Send community details
+        const payload = {
+            _id: communityInfo._id,
+            name: communityInfo.name,
+            createdBy: communityInfo.createdBy,
+            participants: communityInfo.participants,
+            participantCount: communityInfo.participants.length
+        };
+        socket.emit('community-details', payload);
+
+        // Fetch and send community messages
+        const communityMessages = await CommunityMessageModel.find({
+            _id: { $in: communityInfo.messages }
+        })
+        .populate('msgByUserId', 'name profile_pic')
+        .sort({ createdAt: 1 });
+
+        socket.emit('community-messages', communityMessages);
+
+    } catch (error) {
+        console.error("Error fetching community details:", error);
+        socket.emit('error', { message: 'Failed to load community' });
+    }
+    });
+
+    socket.on('new-community-message', async (data) => {
+    console.log('New community message:', data);
+
+    if (!data?.communityId || !data?.msgByUserId || !data?.name) {
+        console.error("Invalid community message data:", data);
+        return;
+    }
+
+    try {
+        // Verify community exists and user is authorized
+        const community = await CommunityModel.findById(data.communityId);
+        
+        if (!community) {
+            console.error("Community not found");
+            return;
+        }
+
+        // Check if user is a participant or creator
+        const isParticipant = community.participants.includes(data.msgByUserId) ||
+                             community.createdBy.toString() === data.msgByUserId;
+
+        if (!isParticipant) {
+            console.error("User not authorized to send messages in this community");
+            return;
+        }
+
+        // Create new community message
+        const message = await CommunityMessageModel.create({
+            text: data.text || "",
+            imageUrl: data.imageUrl || "",
+            videoUrl: data.videoUrl || "",
+            msgByUserId: data.msgByUserId,
+            name: data.name
+        });
+
+        // Add message to community
+        community.messages.push(message._id);
+        await community.save();
+
+        // Populate the message with user details
+        const populatedMessage = await CommunityMessageModel.findById(message._id)
+            .populate('msgByUserId', 'name profile_pic');
+
+        // Emit to all users in the community room
+        io.to(`community_${data.communityId}`).emit('new-community-message-received', {
+            message: populatedMessage,
+            communityId: data.communityId
+        });
+
+        console.log(`Message sent to community ${data.communityId}`);
+
+    } catch (error) {
+        console.error('Error handling new community message:', error);
+        socket.emit('error', { message: 'Failed to send message' });
+    }
+    });
+
+    socket.on('leave-community', (communityId) => {
+        console.log(`User ${userIdString} leaving community ${communityId}`);
+        socket.leave(`community_${communityId}`);
+    });
+
+
+
 });
 
 module.exports = {

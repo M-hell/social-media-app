@@ -5,6 +5,7 @@ import {
   Crown, Calendar, X, Search
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function Community() {
   const [communities, setCommunities] = useState([]);
@@ -18,6 +19,7 @@ function Community() {
   const [availableUsers, setAvailableUsers] = useState([]);
   const [participantUsers, setParticipantUsers] = useState([]);
   const _id = useSelector(state => state.user._id);
+  const navigate = useNavigate();
 
   const [createForm, setCreateForm] = useState({
     name: '',
@@ -284,7 +286,7 @@ function Community() {
                     <div className="flex justify-between items-start mb-5">
                       <div className="flex-1">
                         <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
-                          {community.name}
+                         <span onClick={() => navigate(`/community/${community._id}`)} className="cursor-pointer">{community.name}</span> 
                           {community.isCreator && (
                             <Crown size={18} className="text-yellow-400" title="You're the creator" />
                           )}

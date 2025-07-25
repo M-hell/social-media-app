@@ -2,6 +2,7 @@ const MeetingModel = require('../models/MeetingModel');
 
 async function endMeeting(req, res) {
     try {
+        console.log("End Meeting Request Body 1 to 1 call");
         const { userId, participantId } = req.body;
 
         if (!userId || !participantId) {

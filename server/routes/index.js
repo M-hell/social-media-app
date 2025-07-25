@@ -22,8 +22,10 @@ const deletePost=require('../controllers/deletePost.js')
 // const imageModerator=require('../controllers/ImageModerator.js')
 const ContentModerator=require('../controllers/ContentModerator.js')
 const createACall=require('../controllers/createACall.js')
+const groupCall=require('../controllers/groupCall.js')
 const allMeetings=require('../controllers/allMeetings.js')
 const endMeeting=require('../controllers/endMeeting.js')
+const endGroupCall = require('../controllers/endGroupCall.js');
 const createCommunity = require('../controllers/createCommunity.js');
 const deleteCommunity = require('../controllers/deleteCommunity.js');
 const manageCommunityParticipants = require('../controllers/AddorRemoveParticipant.js');
@@ -92,11 +94,17 @@ router.post('/moderate-content',ContentModerator)
 //create a call
 router.post('/create-call', createACall)
 
+//create a group call
+router.post('/group-call', groupCall);
+
 //get all meetings
 router.get('/all-meetings', allMeetings)
 
 //end a meeting
 router.post('/end-meeting', endMeeting)
+
+//end a group call
+router.post('/end-group-meeting', endGroupCall);
 
 // Create a community
 router.post('/create-community', createCommunity);

@@ -7,6 +7,10 @@ import { FaRegComment } from "react-icons/fa";
 import Comments from './Comments';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Plus, Users, Settings, Trash2, UserPlus, UserMinus, MessageCircle,
+  Crown, Calendar, X, Search
+} from 'lucide-react';
 
 function AllPosts() {
   const [posts, setPosts] = useState([]);
@@ -135,17 +139,25 @@ function AllPosts() {
 
   return (
     <div className="relative px-1 py-4 md:py-7 md:pb-32 bg-transparent min-h-full max-w-full overflow-x-hidden select-none">
-      <div className="mb-8 flex justify-end">
-        <Link
-          to="/add-post"
-          className="inline-flex items-center bg-gradient-to-tr from-orange-500 via-fuchsia-600 to-indigo-600 text-white font-bold py-2 px-5 rounded-xl hover:from-orange-400 hover:via-indigo-500 hover:to-indigo-500 transition-all duration-200 shadow-lg shadow-fuchsia-900/30 focus:ring-2 focus:ring-orange-500/30"
-        >
-          + Add Post
-        </Link>
-      </div>
-      <h1 className="text-3xl md:text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white/90 via-orange-200 to-fuchsia-300 tracking-tight">
-        All Posts
-      </h1>
+      
+      {/* Header */}
+              <div className="flex justify-between items-center mb-8 flex-wrap">
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-orange-200 to-fuchsia-300 tracking-tight">
+                    Explore Posts
+                  </h1>
+                  <p className="text-white/70 mt-2">share captures and moments</p>
+                </div>
+                <Link
+                  to="/add-post"
+                  className="bg-gradient-to-r from-orange-500 to-fuchsia-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-400 hover:to-fuchsia-500 transition-all duration-200 shadow-lg flex items-center gap-2"
+                >
+                  <Plus size={20} /> Create Post
+                </Link>
+              </div>
+
+
+
       {posts.length === 0 ? (
         <p className="text-lg text-white/60">No posts available</p>
       ) : (
