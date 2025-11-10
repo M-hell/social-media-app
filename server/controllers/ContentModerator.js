@@ -4,13 +4,17 @@ const { ConversationModel, MessageModel } = require('../models/ConversationModel
 const UserModel = require('../models/UserModel');
 // const returnGeminiResponseTuned = require('./returnGeminiResponseTuned'); // Import the function to check from tuned model
 
+
+console.log("ContentModerator.js file is loaded...................................");
+
+
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const generateContentWithRetry = async (genAI, prompt, retries = 5) => {
     let attempt = 0;
     while (attempt < retries) {
         try {
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
             return await model.generateContent(prompt);
         } catch (error) {
             if (error.status === 429 && attempt < retries - 1) {

@@ -46,6 +46,7 @@ const Home = () => {
 
   const ContentModerator = async () => {
     try {
+      console.log("Triggering content moderation from client side..................");
       const URL = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/moderate-content`;
       await axios({
         url: URL,
